@@ -93,7 +93,7 @@ class ExternalConfigSpec extends Specification {
 
     def "when getting groovy config with file in classpath"() {
         given:
-        addToEnvironment('grails.config.locations': ['classpath:/ExternalGroovyConfig.groovy'])
+        addToEnvironment('grails.config.locations': ['classpath:/externalConfig.groovy'])
 
         when:
         new ClassWithExternalConfig(environment: environment)
@@ -113,6 +113,17 @@ class ExternalConfigSpec extends Specification {
         getConfigProperty('yml.config') == 'expected-value'
     }
 
+    def "when getting properties config with file in classpath"() {
+        given:
+        addToEnvironment('grails.config.locations': ['classpath:/externalConfig.properties'])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('propertyFile.config') == 'expected-value'
+    }
+
     private Environment addToEnvironment(Map properties = [:]) {
         ((AbstractEnvironment) environment).propertySources.addFirst(new MapPropertySource("Basic config", properties))
     }
@@ -120,6 +131,4 @@ class ExternalConfigSpec extends Specification {
     private String getConfigProperty(String key) {
         ((AbstractEnvironment) environment).getProperty(key)
     }
-
-
 }

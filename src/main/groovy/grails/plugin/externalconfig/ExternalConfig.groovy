@@ -1,5 +1,6 @@
 package grails.plugin.externalconfig
 
+import org.grails.config.yaml.YamlPropertySourceLoader
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
 import org.springframework.context.EnvironmentAware
 import org.springframework.core.env.AbstractEnvironment
@@ -11,6 +12,8 @@ import org.springframework.core.io.ResourceLoader
 
 trait ExternalConfig implements EnvironmentAware {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
+    private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
+
     /**
      * Set the {@code Environment} that this object runs in.
      */
@@ -32,11 +35,16 @@ trait ExternalConfig implements EnvironmentAware {
                 Resource resource = defaultResourceLoader.getResource(finalLocation)
                 if(resource.exists()) {
                     println "resource exists: $resource.filename"
-                    // TODO differ between .groovy and .yml files
+
                     if(finalLocation.endsWith('.groovy')) {
                         properties = loadGroovyConfig(resource, encoding)
                     } else if(finalLocation.endsWith('.yml')) {
+                        environment.activeProfiles
                         properties = loadYamlConfig(resource)
+
+                    } else {
+                        // Attempt to load the config as plain old properties file (POPF)
+                        properties = loadPropertiesConfig(resource)
                     }
                 } else {
                     println "Config file $finalLocation not found"
@@ -48,7 +56,6 @@ trait ExternalConfig implements EnvironmentAware {
         }
 
     }
-
 
     private Map loadClassConfig(Class location) {
         println "Loading config class ${location.name}"
@@ -62,9 +69,16 @@ trait ExternalConfig implements EnvironmentAware {
     }
 
     private Map loadYamlConfig(Resource resource) {
+        // TODO:        def yaml = new YamlPropertySourceLoader()
         YamlPropertiesFactoryBean yamlPropertiesFactoryBean = new YamlPropertiesFactoryBean()
         yamlPropertiesFactoryBean.setResources(resource)
         yamlPropertiesFactoryBean.afterPropertiesSet()
         yamlPropertiesFactoryBean.getObject()
+    }
+
+    Map loadPropertiesConfig(Resource resource) {
+        Properties properties = new Properties()
+        properties.load(resource.inputStream)
+        return properties
     }
 }
