@@ -23,7 +23,7 @@ class ExternalConfigSpec extends Specification {
         environment.properties == old(environment.properties)
     }
 
-    def "when getting config with grails.config.location set, and the configs does not exist, noting changes"() {
+    def "when getting config with configs does not exist, noting changes"() {
         given:
         addToEnvironment('grails.config.locations': ['boguslocation','/otherboguslocation','classpath:bogusclasspath','~/bogus', 'file://bogusfile','http://bogus.server'])
 
@@ -34,9 +34,9 @@ class ExternalConfigSpec extends Specification {
         environment.properties == old(environment.properties)
     }
 
-    def "when getting config with grails.config.location with class config, expect the config to be loaded"() {
+    def "when getting config with config class, expect the config to be loaded"() {
         given:
-        addToEnvironment('grails.config.locations': [grails.plugin.externalconfig.ConfigWithoutEnvironmentBlock])
+        addToEnvironment('grails.config.locations': [ConfigWithoutEnvironmentBlock])
 
         when:
         new ClassWithExternalConfig(environment: environment)
@@ -45,6 +45,73 @@ class ExternalConfigSpec extends Specification {
         getConfigProperty('test.external.config') == 'expected-value'
     }
 
+    def "when getting config with file in user.home"() {
+        given:
+        def file = new File("/${System.getProperty('user.home')}/.grails", 'external-config-temp-config.groovy')
+        file.text = """\
+            config.value = 'expected-value'
+            nested { config { value = 'nested-value' } }
+            """.stripIndent()
+
+        and:
+        addToEnvironment('grails.config.locations': ['~/.grails/external-config-temp-config.groovy'])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('config.value') == 'expected-value'
+        getConfigProperty('nested.config.value') == 'nested-value'
+
+        cleanup:
+        file.delete()
+
+    }
+
+    def "when getting config with file in specific folder"() {
+        given:
+        def file= File.createTempFile("other-external-config-temp-config",'.groovy')
+        file.text = """\
+            config.value = 'expected-value'
+            nested { config { value = 'nested-value' } }
+            """.stripIndent()
+
+        and:
+        addToEnvironment('grails.config.locations': ["file://${file.absolutePath}"])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('config.value') == 'expected-value'
+        getConfigProperty('nested.config.value') == 'nested-value'
+
+        cleanup:
+        file.delete()
+
+    }
+
+    def "when getting groovy config with file in classpath"() {
+        given:
+        addToEnvironment('grails.config.locations': ['classpath:/ExternalGroovyConfig.groovy'])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('external.config') == 'expected-value'
+    }
+
+    def "when getting yml config with file in classpath"() {
+        given:
+        addToEnvironment('grails.config.locations': ['classpath:/externalConfig.yml'])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('yml.config') == 'expected-value'
+    }
 
     private Environment addToEnvironment(Map properties = [:]) {
         ((AbstractEnvironment) environment).propertySources.addFirst(new MapPropertySource("Basic config", properties))
