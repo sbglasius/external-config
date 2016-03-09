@@ -1,4 +1,4 @@
-package external.config
+package grails.plugin.externalconfig
 
 import grails.plugins.*
 

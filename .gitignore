@@ -1,3 +1,6 @@
+build/
+out/
+.idea/
 .gradle/
 external-config.iml 
 external-config.ipr 
