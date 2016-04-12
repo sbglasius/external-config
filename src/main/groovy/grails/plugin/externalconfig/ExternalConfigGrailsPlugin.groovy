@@ -4,29 +4,20 @@ import grails.plugins.*
 
 class ExternalConfigGrailsPlugin extends Plugin {
 
-    // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "3.1.1 > *"
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
+    def grailsVersion = "3.0.0 > *"
+    def pluginExcludes = []
 
-    // TODO Fill in these fields
     def title = "External Config" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
+    def author = "Søren Berg Glasius"
+    def authorEmail = "soeren@glasius.dk"
     def description = '''\
-Brief summary/description of the plugin.
+Load configs with grails.config.locations like in Grails 2.x
 '''
     def profiles = ['web']
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/external-config"
-
-    // Extra (optional) plugin metadata
-
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
+    def license = "APACHE"
 
     // Details of company behind the plugin (if there is one)
 //    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
@@ -38,33 +29,5 @@ Brief summary/description of the plugin.
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
 
     // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
-
-    Closure doWithSpring() { {->
-            // TODO Implement runtime spring config (optional)
-        }
-    }
-
-    void doWithDynamicMethods() {
-        // TODO Implement registering dynamic methods to classes (optional)
-    }
-
-    void doWithApplicationContext() {
-        // TODO Implement post initialization spring config (optional)
-    }
-
-    void onChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-    }
-
-    void onConfigChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    void onShutdown(Map<String, Object> event) {
-        // TODO Implement code that is executed when the application shuts down (optional)
-    }
+    //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 }

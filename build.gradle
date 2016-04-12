@@ -12,7 +12,7 @@ buildscript {
 }
 
 version "0.1.BUILD-SNAPSHOT"
-group "external.config"
+group "org.grails.plugins"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
