@@ -19,5 +19,4 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   fi
 
 fi
-
 exit $EXIT_STATUS
