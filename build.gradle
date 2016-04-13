@@ -85,11 +85,6 @@ artifactoryPublish {
 }
 
 grailsPublish {
-    user = bintrayUser
-    key = bintrayKey
-    portalUser = grailsPortalUser
-    portalPassword = grailsPortalPassword
-
     userOrg = 'grails'
     repo = 'plugins'
 
