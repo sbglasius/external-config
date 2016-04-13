@@ -73,8 +73,8 @@ artifactory {
     publish {
         repository {
             repoKey = isSnapshot ? 'oss-snapshot-local' : 'oss-release-local'
-            username = "${System.getProperty('BINTRAY_USER', "$bintrayUser")}"
-            password = "${System.getProperty('BINTRAY_KEY', "$bintrayKey")}"
+            username = bintrayUser
+            password = bintrayKey
         }
         defaults {
             publications('maven')
@@ -87,10 +87,10 @@ artifactoryPublish {
 }
 
 grailsPublish {
-    user = "${System.getProperty('BINTRAY_USER',"$bintrayUser")}"
-    key = "${System.getProperty('BINTRAY_KEY',"$bintrayKey")}"
-    portalUser = "${System.getProperty('GRAILS_PORTAL_USER',"$grailsPortalUser")}"
-    portalPassword = "${System.getProperty('GRAILS_PORTAL_PASSWORD', "$grailsPortalPassword")}"
+    user = bintrayUser
+    key = bintrayKey
+    portalUser = grailsPortalUser
+    portalPassword = grailsPortalPassword
 
     userOrg = 'grails'
     repo = 'plugins'
