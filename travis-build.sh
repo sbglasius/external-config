@@ -4,11 +4,9 @@ rm -rf *.zip
 
 mkdir -p ~/.gradle
 [[ ! -z "$BINTRAY_USER" ]] && echo "bintrayUser=$BINTRAY_USER" >> ~/.gradle/gradle.properties
-[[ ! -z "$BINTRAY_KEY" ]] && echo "bintrayKey=$BINTRAY_KEY" >> ~/.gradle/gradle.proeprties
-[[ ! -z "$GRAILS_PORTAL_USER" ]] && echo "grailsPortalUser=$GRAILS_PORTAL_USER" >> ~/.gradle/gradle.proeprties
-[[ ! -z "$GRAILS_PORTAL_PASSWORD" ]] && echo "grailsPortalPassword=$GRAILS_PORTAL_PASSWORD" >> ~/.gradle/gradle.proeprties
-
-cat ~/.gradle/gradle.properties
+[[ ! -z "$BINTRAY_KEY" ]] && echo "bintrayKey=$BINTRAY_KEY" >> ~/.gradle/gradle.properties
+[[ ! -z "$GRAILS_PORTAL_USER" ]] && echo "grailsPortalUser=$GRAILS_PORTAL_USER" >> ~/.gradle/gradle.properties
+[[ ! -z "$GRAILS_PORTAL_PASSWORD" ]] && echo "grailsPortalPassword=$GRAILS_PORTAL_PASSWORD" >> ~/.gradle/gradle.properties
 
 ./gradlew clean test assemble
 
