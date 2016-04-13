@@ -2,11 +2,13 @@
 set -e
 rm -rf *.zip
 
-mkdir -p $HOME/.gradle
-echo >> $HOME/.gradle/gradle.properties "bintrayUser=$BINTRAY_USER"
-echo >> $HOME/.gradle/gradle.proeprties "bintrayKey=$BINTRAY_KEY"
-echo >> $HOME/.gradle/gradle.proeprties "grailsPortalUser=$GRAILS_PORTAL_USER"
-echo >> $HOME/.gradle/gradle.proeprties "grailsPortalPassword=$GRAILS_PORTAL_PASSWORD"
+mkdir -p ~/.gradle
+[[ ! -z "$BINTRAY_USER" ]] && echo "bintrayUser=$BINTRAY_USER" >> ~/.gradle/gradle.properties
+[[ ! -z "$BINTRAY_KEY" ]] && echo "bintrayKey=$BINTRAY_KEY" >> ~/.gradle/gradle.proeprties
+[[ ! -z "$GRAILS_PORTAL_USER" ]] && echo "grailsPortalUser=$GRAILS_PORTAL_USER" >> ~/.gradle/gradle.proeprties
+[[ ! -z "$GRAILS_PORTAL_PASSWORD" ]] && echo "grailsPortalPassword=$GRAILS_PORTAL_PASSWORD" >> ~/.gradle/gradle.proeprties
+
+cat ~/.gradle/gradle.properties
 
 ./gradlew clean test assemble
 
@@ -26,6 +28,6 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   fi
 
 fi
-rm $HOME/.gradle/gradle.properties
+rm ~/.gradle/gradle.properties
 
 exit $EXIT_STATUS
