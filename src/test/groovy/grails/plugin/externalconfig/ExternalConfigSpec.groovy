@@ -6,6 +6,7 @@ import grails.web.servlet.context.support.GrailsEnvironment
 import org.springframework.core.env.AbstractEnvironment
 import org.springframework.core.env.Environment
 import org.springframework.core.env.MapPropertySource
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 
 @TestMixin(GrailsUnitTestMixin)
@@ -45,6 +46,7 @@ class ExternalConfigSpec extends Specification {
         getConfigProperty('test.external.config') == 'expected-value'
     }
 
+    @IgnoreIf({ !(new File(System.getProperty('user.home')).exists()) }) // Fails on travis, but not locally
     def "when getting config with file in user.home"() {
         given:
         def file = new File("/${System.getProperty('user.home')}/.grails", 'external-config-temp-config.groovy')
