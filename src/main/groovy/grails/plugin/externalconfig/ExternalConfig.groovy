@@ -1,15 +1,19 @@
 package grails.plugin.externalconfig
 
+import groovy.transform.CompileStatic
+import org.grails.config.NavigableMapPropertySource
 import org.grails.config.yaml.YamlPropertySourceLoader
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
 import org.springframework.context.EnvironmentAware
 import org.springframework.core.env.AbstractEnvironment
 import org.springframework.core.env.Environment
 import org.springframework.core.env.MapPropertySource
+import org.springframework.core.env.PropertiesPropertySource
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
+@CompileStatic
 trait ExternalConfig implements EnvironmentAware {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
@@ -23,62 +27,61 @@ trait ExternalConfig implements EnvironmentAware {
         String encoding = environment.getProperty('grails.config.encoding', String, 'UTF-8')
 
         for (location in locations) {
-            Map properties = null
+            MapPropertySource propertySource = null
             if (location instanceof Class) {
-                properties = loadClassConfig(location as Class)
+                propertySource = loadClassConfig(location as Class)
             } else {
                 String finalLocation = location.toString()
                 // Replace ~ with value from system property 'user.home' if set
-                if(environment.properties.systemProperties.'user.home' && finalLocation.startsWith('~/')) {
-                    finalLocation = "file:${environment.properties.systemProperties.'user.home'}${finalLocation[1..-1]}"
+                String userHome = System.properties.getProperty('user.home')
+                if(userHome && finalLocation.startsWith('~/')) {
+                    finalLocation = "file:${userHome}${finalLocation[1..-1]}"
                 }
                 Resource resource = defaultResourceLoader.getResource(finalLocation)
                 if(resource.exists()) {
                     println "resource exists: $resource.filename"
 
                     if(finalLocation.endsWith('.groovy')) {
-                        properties = loadGroovyConfig(resource, encoding)
+                        propertySource = loadGroovyConfig(resource, encoding)
                     } else if(finalLocation.endsWith('.yml')) {
                         environment.activeProfiles
-                        properties = loadYamlConfig(resource)
+                        propertySource = loadYamlConfig(resource)
 
                     } else {
                         // Attempt to load the config as plain old properties file (POPF)
-                        properties = loadPropertiesConfig(resource)
+                        propertySource = loadPropertiesConfig(resource)
                     }
                 } else {
                     println "Config file $finalLocation not found"
                 }
             }
-            if (properties) {
-                ((AbstractEnvironment) environment).propertySources.addFirst(new MapPropertySource(location.toString(), properties))
+            if (propertySource?.getSource() && !propertySource.getSource().isEmpty()) {
+                ((AbstractEnvironment) environment).propertySources.addFirst(propertySource)
             }
         }
-
     }
 
-    private Map loadClassConfig(Class location) {
+    private MapPropertySource loadClassConfig(Class location) {
         println "Loading config class ${location.name}"
-        new ConfigSlurper(grails.util.Environment.current.name).parse((Class) location)?.flatten()
+        Map properties = new ConfigSlurper(grails.util.Environment.current.name).parse((Class) location)?.flatten()
+        new MapPropertySource(location.toString(), properties)
     }
 
-    private Map loadGroovyConfig(Resource resource, String encoding) {
+    private MapPropertySource loadGroovyConfig(Resource resource, String encoding) {
         println "Loading groovy config file ${resource.URI}"
         String configText = resource.inputStream.getText(encoding)
-        return configText ? new ConfigSlurper(grails.util.Environment.current.name).parse(configText)?.flatten() : null
+        Map properties = configText ? new ConfigSlurper(grails.util.Environment.current.name).parse(configText)?.flatten() : [:]
+        new MapPropertySource(resource.filename, properties)
     }
 
-    private Map loadYamlConfig(Resource resource) {
-        // TODO:        def yaml = new YamlPropertySourceLoader()
-        YamlPropertiesFactoryBean yamlPropertiesFactoryBean = new YamlPropertiesFactoryBean()
-        yamlPropertiesFactoryBean.setResources(resource)
-        yamlPropertiesFactoryBean.afterPropertiesSet()
-        yamlPropertiesFactoryBean.getObject()
+    private NavigableMapPropertySource loadYamlConfig(Resource resource) {
+        NavigableMapPropertySource propertySource = yamlPropertySourceLoader.load(resource.filename, resource, null) as NavigableMapPropertySource
+        return propertySource
     }
 
-    Map loadPropertiesConfig(Resource resource) {
+    private MapPropertySource loadPropertiesConfig(Resource resource) {
         Properties properties = new Properties()
         properties.load(resource.inputStream)
-        return properties
+        new MapPropertySource(resource.filename, properties as Map)
     }
 }

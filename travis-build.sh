@@ -22,7 +22,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   if [[ -n $TRAVIS_TAG ]]; then
       ./gradlew bintrayUpload || EXIT_STATUS=$?
   else
-      ./gradlew artifactoryPublish || EXIT_STATUS=$?
+      ./gradlew publish || EXIT_STATUS=$?
   fi
 
 fi
