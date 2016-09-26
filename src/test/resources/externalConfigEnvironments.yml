@@ -1,0 +1,9 @@
+yml:
+  config: expected-value
+environments:
+    development:
+      yml:
+        config: expected-value-dev
+    test:
+      yml:
+        config: expected-value-test

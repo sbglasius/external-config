@@ -10,6 +10,9 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     }
 }
+plugins {
+    id "com.jfrog.artifactory" version "4.4.0"
+}
 
 version "0.1.BUILD-SNAPSHOT"
 group "org.grails.plugins"
@@ -42,24 +45,37 @@ dependencies {
     provided "org.grails:grails-core"
     provided "org.grails:grails-dependencies"
 
+    console "org.grails:grails-console"
     profile "org.grails.profiles:plugin"
     provided "org.springframework.boot:spring-boot-starter-tomcat"
     testCompile "org.grails:grails-plugin-testing"
 }
+
 grailsPublish {
-    user = bintrayUser
-    key = bintrayKey
-    portalUser = grailsPortalUser
-    portalPassword = grailsPortalPassword
+    user = System.getenv("BINTRAY_USER") ?: project.bintrayUser
+    key = System.getenv("BINTRAY_KEY") ?: project.bintrayKey
+    githubSlug = 'https://github.com/sbglasius/external-config'
 
-    userOrg = 'grails'
-    repo = 'plugins'
-
-    githubSlug = 'sbglasius/external-config'
     license {
         name = 'Apache-2.0'
     }
     title = "External Config"
     desc = "Load configs with grails.config.locations like in Grails 2.x"
     developers = [sbglasius: "Søren Berg Glasius"]
+    portalUser = System.getenv("GRAILS_PORTAL_USER") ?: project.grailsPortalUser
+    portalPassword = System.getenv("GRAILS_PORTAL_PASSWORD") ?: project.grailsPortalPassword
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.getenv("BINTRAY_USER") ?: project.bintrayUser
+            password = System.getenv("BINTRAY_KEY") ?: project.bintrayKey
+        }
+        defaults {
+            publications('maven')
+        }
+    }
 }

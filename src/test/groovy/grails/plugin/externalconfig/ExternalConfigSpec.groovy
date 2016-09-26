@@ -13,6 +13,7 @@ class ExternalConfigSpec extends Specification {
     static class ClassWithExternalConfig implements ExternalConfig {
 
     }
+
     Environment environment = new GrailsEnvironment(grailsApplication)
 
     def "when getting config without grails.config.location set, the config does not change"() {
@@ -45,10 +46,22 @@ class ExternalConfigSpec extends Specification {
         getConfigProperty('test.external.config') == 'expected-value'
     }
 
+    def "when getting config with config class and environment block, expect the config to be loaded"() {
+        given:
+        addToEnvironment('grails.config.locations': [ConfigWithEnvironmentBlock])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('test.external.config') == 'expected-value-test'
+    }
+
     def "when getting config with file in user.home"() {
         given: "The home directory of the user"
         def dir = new File("${System.getProperty('user.home')}/.grails")
         dir.mkdirs()
+
         and: "a new external configuration file"
         def file = new File(dir, 'external-config-temp-config.groovy')
         file.text = """\
@@ -125,6 +138,18 @@ class ExternalConfigSpec extends Specification {
         then:
         getConfigProperty('propertyFile.config') == 'expected-value'
     }
+
+    def "when getting yml config with file in classpath and with environments block "() {
+        given:
+        addToEnvironment('grails.config.locations': ['classpath:/externalConfigEnvironments.yml'])
+
+        when:
+        new ClassWithExternalConfig(environment: environment)
+
+        then:
+        getConfigProperty('yml.config') == 'expected-value-test'
+    }
+
 
     private Environment addToEnvironment(Map properties = [:]) {
         ((AbstractEnvironment) environment).propertySources.addFirst(new MapPropertySource("Basic config", properties))

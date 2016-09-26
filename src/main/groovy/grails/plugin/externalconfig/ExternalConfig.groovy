@@ -1,14 +1,15 @@
 package grails.plugin.externalconfig
 
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.grails.config.NavigableMapPropertySource
 import org.grails.config.yaml.YamlPropertySourceLoader
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.EnvironmentAware
 import org.springframework.core.env.AbstractEnvironment
 import org.springframework.core.env.Environment
 import org.springframework.core.env.MapPropertySource
-import org.springframework.core.env.PropertiesPropertySource
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
@@ -17,7 +18,7 @@ import org.springframework.core.io.ResourceLoader
 trait ExternalConfig implements EnvironmentAware {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
-
+    private Logger log = LoggerFactory.getLogger('grails.plugin.externalconfig.ExternalConfig')
     /**
      * Set the {@code Environment} that this object runs in.
      */
@@ -34,25 +35,24 @@ trait ExternalConfig implements EnvironmentAware {
                 String finalLocation = location.toString()
                 // Replace ~ with value from system property 'user.home' if set
                 String userHome = System.properties.getProperty('user.home')
-                if(userHome && finalLocation.startsWith('~/')) {
+                if (userHome && finalLocation.startsWith('~/')) {
                     finalLocation = "file:${userHome}${finalLocation[1..-1]}"
                 }
                 Resource resource = defaultResourceLoader.getResource(finalLocation)
-                if(resource.exists()) {
+                if (resource.exists()) {
                     println "resource exists: $resource.filename"
 
-                    if(finalLocation.endsWith('.groovy')) {
+                    if (finalLocation.endsWith('.groovy')) {
                         propertySource = loadGroovyConfig(resource, encoding)
-                    } else if(finalLocation.endsWith('.yml')) {
+                    } else if (finalLocation.endsWith('.yml')) {
                         environment.activeProfiles
                         propertySource = loadYamlConfig(resource)
-
                     } else {
                         // Attempt to load the config as plain old properties file (POPF)
                         propertySource = loadPropertiesConfig(resource)
                     }
                 } else {
-                    println "Config file $finalLocation not found"
+                    log.debug("Config file {} not found", [finalLocation] as Object[])
                 }
             }
             if (propertySource?.getSource() && !propertySource.getSource().isEmpty()) {
@@ -62,13 +62,13 @@ trait ExternalConfig implements EnvironmentAware {
     }
 
     private MapPropertySource loadClassConfig(Class location) {
-        println "Loading config class ${location.name}"
+        log.info("Loading config class {}", location.name)
         Map properties = new ConfigSlurper(grails.util.Environment.current.name).parse((Class) location)?.flatten()
         new MapPropertySource(location.toString(), properties)
     }
 
     private MapPropertySource loadGroovyConfig(Resource resource, String encoding) {
-        println "Loading groovy config file ${resource.URI}"
+        log.info("Loading groovy config file {}", resource.URI)
         String configText = resource.inputStream.getText(encoding)
         Map properties = configText ? new ConfigSlurper(grails.util.Environment.current.name).parse(configText)?.flatten() : [:]
         new MapPropertySource(resource.filename, properties)
