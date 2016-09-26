@@ -54,6 +54,9 @@ dependencies {
 grailsPublish {
     user = System.getenv("BINTRAY_USER") ?: project.bintrayUser
     key = System.getenv("BINTRAY_KEY") ?: project.bintrayKey
+
+    userOrg = "grails"
+
     githubSlug = 'https://github.com/sbglasius/external-config'
 
     license {
