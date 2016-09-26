@@ -1,5 +1,6 @@
 External-Config
 ===============
+[![Build Status](https://travis-ci.org/sbglasius/external-config.svg?branch=master)](https://travis-ci.org/sbglasius/external-config)
 
 This plugin will mimic the Grails 2 way of handling external configurations defined in `grails.config.locations`.
 
