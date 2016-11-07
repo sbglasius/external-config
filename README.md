@@ -69,7 +69,7 @@ grails:
 or in `application.groovy` like this:
 
 ```
-grails.config.location = [
+grails.config.locations = [
         "classpath:myconfig.groovy",
         "classpath:myconfig.yml",
         "classpath:myconfig.properties",
