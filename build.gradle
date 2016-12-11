@@ -11,7 +11,7 @@ buildscript {
     }
 }
 plugins {
-    id "com.jfrog.artifactory" version "4.4.0"
+   // id "com.jfrog.artifactory" version "4.4.0"
 }
 
 version "$pluginVersion"
@@ -50,7 +50,7 @@ dependencies {
     provided "org.springframework.boot:spring-boot-starter-tomcat"
     testCompile "org.grails:grails-plugin-testing"
 }
-
+/*
 grailsPublish {
     user = System.getenv("BINTRAY_USER") ?: project.bintrayUser
     key = System.getenv("BINTRAY_KEY") ?: project.bintrayKey
@@ -67,8 +67,8 @@ grailsPublish {
     developers = [sbglasius: "Søren Berg Glasius"]
     portalUser = System.getenv("GRAILS_PORTAL_USER") ?: project.grailsPortalUser
     portalPassword = System.getenv("GRAILS_PORTAL_PASSWORD") ?: project.grailsPortalPassword
-}
-
+}*/
+/*
 artifactory {
     contextUrl = 'http://oss.jfrog.org'
     publish {
@@ -81,4 +81,4 @@ artifactory {
             publications('maven')
         }
     }
-}
+} */
