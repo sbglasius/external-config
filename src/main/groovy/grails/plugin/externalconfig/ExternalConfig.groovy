@@ -86,8 +86,8 @@ trait ExternalConfig implements EnvironmentAware {
                     "${defaultConfigPrefix}.config" :
                     "${defaultConfigPrefix}.${it}.config"
             String configPath = System.properties[configKey]
-            if (System.properties[configPath]) {
-                locations << "file:" + System.properties[configPath]
+            if (configPath) {
+                locations << "file:" + configPath
             }
         }
 
