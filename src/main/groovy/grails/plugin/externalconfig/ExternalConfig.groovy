@@ -16,7 +16,7 @@ import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
-//@CompileStatic
+@CompileStatic
 trait ExternalConfig implements EnvironmentAware {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
@@ -30,7 +30,6 @@ trait ExternalConfig implements EnvironmentAware {
      *  appPrefix.database.config
      *  appPrefix.logging.config
      *  appPrefix.external.config
-     *  appPrefix.vendor.config
      *
      * @return  the name to be used as the prefix for computed property names.
      */
@@ -87,6 +86,7 @@ trait ExternalConfig implements EnvironmentAware {
                     "${defaultConfigPrefix}.${it}.config"
             String configPath = System.properties[configKey]
             if (configPath) {
+                log.info("Loading configuration: $configPath")
                 locations << "file:" + configPath
             }
         }
