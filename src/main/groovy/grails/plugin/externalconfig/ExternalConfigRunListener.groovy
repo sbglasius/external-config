@@ -1,5 +1,6 @@
 package grails.plugin.externalconfig
 
+import groovy.transform.CompileStatic
 import org.grails.config.NavigableMapPropertySource
 import org.grails.config.yaml.YamlPropertySourceLoader
 import org.slf4j.Logger
@@ -13,6 +14,7 @@ import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
+@CompileStatic
 class ExternalConfigRunListener implements SpringApplicationRunListener {
 
 	private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
