@@ -10,15 +10,13 @@ import spock.lang.Specification
 
 @TestMixin(GrailsUnitTestMixin)
 class ExternalConfigSpec extends Specification {
-    static class ClassWithExternalConfig implements ExternalConfig {
-
-    }
 
     Environment environment = new GrailsEnvironment(grailsApplication)
+    ExternalConfigRunListener listener = new ExternalConfigRunListener(null, null)
 
     def "when getting config without grails.config.location set, the config does not change"() {
         when:
-        new ClassWithExternalConfig(environment: environment)
+        listener.environmentPrepared(environment)
 
         then:
         environment.properties == old(environment.properties)
@@ -29,7 +27,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ['boguslocation','/otherboguslocation','classpath:bogusclasspath','~/bogus', 'file://bogusfile','http://bogus.server'])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+        listener.environmentPrepared(environment)
 
         then:
         environment.properties == old(environment.properties)
@@ -40,7 +38,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': [ConfigWithoutEnvironmentBlock])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+       listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('test.external.config') == 'expected-value'
@@ -51,7 +49,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': [ConfigWithEnvironmentBlock])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+       listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('test.external.config') == 'expected-value-test'
@@ -73,7 +71,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ['~/.grails/external-config-temp-config.groovy'])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+        listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('config.value') == 'expected-value'
@@ -95,7 +93,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ["file://${file.absolutePath}"])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+       listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('config.value') == 'expected-value'
@@ -111,7 +109,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ['classpath:/externalConfig.groovy'])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+        listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('external.config') == 'expected-value'
@@ -122,7 +120,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ['classpath:/externalConfig.yml'])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+       listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('yml.config') == 'expected-value'
@@ -133,7 +131,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ['classpath:/externalConfig.properties'])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+        listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('propertyFile.config') == 'expected-value'
@@ -144,7 +142,7 @@ class ExternalConfigSpec extends Specification {
         addToEnvironment('grails.config.locations': ['classpath:/externalConfigEnvironments.yml'])
 
         when:
-        new ClassWithExternalConfig(environment: environment)
+       listener.environmentPrepared(environment)
 
         then:
         getConfigProperty('yml.config') == 'expected-value-test'
