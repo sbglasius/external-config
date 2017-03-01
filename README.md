@@ -4,6 +4,13 @@ External-Config
 
 This plugin will mimic the Grails 2 way of handling external configurations defined in `grails.config.locations`.
 
+
+IMPORTANT!
+----------
+The External Config Plugin no longer needs to implement `ExternalConfig` on `Application.groovy`. It now uses a `SpringApplicationRunListener`and hooks into the startup automagically. So if you used the plugin in prior versions, please remove `implements ExternalConfig` from `Application.groovy`
+
+Thanks you to [Sudhir Nimavat](https://github.com/snimavat) for the Pull Request!
+
 Installation
 ------------
 
@@ -34,22 +41,7 @@ dependencies {
 Usage
 -----
 
-Locate your Grails projects `Application.groovy` and implement the trait `grails.plugin.externalconfig.ExternalConfig`:
-
-```
-import grails.plugin.externalconfig.ExternalConfig
-
-class Application extends GrailsAutoConfiguration implements ExternalConfig {
-    static void main(String[] args) {
-        GrailsApp.run(Application, args)
-    }
-}
-```
-
-This will add external-config loading to your Grails application.
-
-
-Then define the property `grails.config.locations`. This can be done in either `application.yml` like this:
+When you add this plugin to your Grails build, it will automatically look for the property `grails.config.locations`. Define this in in either `application.yml` like this:
 
 ```
 grails:
