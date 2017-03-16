@@ -81,6 +81,32 @@ class ExternalConfigSpec extends Specification {
         file.delete()
     }
 
+    def "when getting config with file in system property user.home"() {
+        given: "The home directory of the user"
+        def dir = new File("${System.getProperty('user.home')}/.grails")
+        dir.mkdirs()
+
+        and: "a new external configuration file"
+        def file = new File(dir, 'external-config-temp-config.groovy')
+        file.text = """\
+            config.value = 'expected-value'
+            nested { config { value = 'nested-value' } }
+            """.stripIndent()
+
+        and:
+        addToEnvironment('grails.config.locations': ['file:${user.home}/.grails/external-config-temp-config.groovy'])
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then:
+        getConfigProperty('config.value') == 'expected-value'
+        getConfigProperty('nested.config.value') == 'nested-value'
+
+        cleanup:
+        file.delete()
+    }
+
     def "when getting config with file in specific folder"() {
         given:
         def file= File.createTempFile("other-external-config-temp-config",'.groovy')
@@ -90,7 +116,7 @@ class ExternalConfigSpec extends Specification {
             """.stripIndent()
 
         and:
-        addToEnvironment('grails.config.locations': ["file://${file.absolutePath}"])
+        addToEnvironment('grails.config.locations': ["file:${file.absolutePath}"])
 
         when:
        listener.environmentPrepared(environment)
