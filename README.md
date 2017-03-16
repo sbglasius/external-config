@@ -56,9 +56,9 @@ grails:
             - ~/.grails/myconfig.groovy
             - ~/.grails/myconfig.yml
             - ~/.grails/myconfig.properties
-            - file:${catalina.base}/myapp.groovy
-            - file:${catalina.base}/myapp.yml
-            - file:${catalina.base}/myapp.properties
+            - file:${catalina.base}/myconfig.groovy
+            - file:${catalina.base}/myconfig.yml
+            - file:${catalina.base}/myconfig.properties
 ```
 
 or in `application.groovy` like this:
@@ -74,9 +74,9 @@ grails.config.locations = [
         "~/.grails/myconfig.groovy",
         "~/.grails/myconfig.yml",
         "~/.grails/myconfig.properties",
-        'file:${catalina.base}/myapp.groovy',
-        'file:${catalina.base}/myapp.yml',
-        'file:${catalina.base}/myapp.properties',
+        'file:${catalina.base}/myconfig.groovy',
+        'file:${catalina.base}/myconfig.yml',
+        'file:${catalina.base}/myconfig.properties',
 ]
 ```
 
