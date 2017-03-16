@@ -9,7 +9,14 @@ IMPORTANT!
 ----------
 The External Config Plugin no longer needs to implement `ExternalConfig` on `Application.groovy`. It now uses a `SpringApplicationRunListener`and hooks into the startup automagically. So if you used the plugin in prior versions, please remove `implements ExternalConfig` from `Application.groovy`
 
-Thanks you to [Sudhir Nimavat](https://github.com/snimavat) for the Pull Request!
+
+Contributors
+------------
+
+* [Sudhir Nimavat](https://github.com/snimavat) 
+* [Dennie de Lange](https://github.com/tkvw)
+
+Thank you!
 
 Installation
 ------------
