@@ -7,7 +7,7 @@ This plugin will mimic the Grails 2 way of handling external configurations defi
 
 IMPORTANT!
 ----------
-The External Config Plugin no longer needs to implement `ExternalConfig` on `Application.groovy`. It now uses a `SpringApplicationRunListener`and hooks into the startup automagically. So if you used the plugin in prior versions, please remove `implements ExternalConfig` from `Application.groovy`
+The External Config Plugin (1.1.0 and above) no longer needs to implement `ExternalConfig` on `Application.groovy`. It now uses a `SpringApplicationRunListener`and hooks into the startup automagically. So if you used the plugin in prior versions, please remove `implements ExternalConfig` from `Application.groovy`
 
 
 Contributors
@@ -25,7 +25,7 @@ Add dependency to your `build.gradle`:
 
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.0.0'
+    compile 'org.grails.plugins:external-config:1.1.0'
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 and specify the snapshot version as a dependency:
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.1.0-BUILD-SNAPSHOT'
+    compile 'org.grails.plugins:external-config:1.1.1-BUILD-SNAPSHOT'
 }
 ```
 
