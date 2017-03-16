@@ -27,14 +27,14 @@ To use a snapshot-version
 add JFrog OSS Repository to the `repositories`:
 ```
 repositories {
-    maven { url "https://repo.grails.org/grails/core" }
+    maven { url "https://oss.jfrog.org/repo/" }
 }
 ```
 
 and specify the snapshot version as a dependency:
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.0.0-SNAPSHOT'
+    compile 'org.grails.plugins:external-config:1.1.0-SNAPSHOT'
 }
 ```
 
