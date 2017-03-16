@@ -56,6 +56,9 @@ grails:
             - ~/.grails/myconfig.groovy
             - ~/.grails/myconfig.yml
             - ~/.grails/myconfig.properties
+            - file:${catalina.base}/myconfig.groovy
+            - file:${catalina.base}/myconfig.yml
+            - file:${catalina.base}/myconfig.properties
 ```
 
 or in `application.groovy` like this:
@@ -70,11 +73,15 @@ grails.config.locations = [
         "file:///etc/app/myconfig.properties",
         "~/.grails/myconfig.groovy",
         "~/.grails/myconfig.yml",
-        "~/.grails/myconfig.properties"
+        "~/.grails/myconfig.properties",
+        'file:${catalina.base}/myconfig.groovy',
+        'file:${catalina.base}/myconfig.yml',
+        'file:${catalina.base}/myconfig.properties',
 ]
 ```
 
 Notice, that `~/` references the users `$HOME` directory.
+Notice, that using a system property you should use single quotes because otherwise it's interpreted as a Gstring.
 
 The plugin will skip configuration files that are not found. 
 
