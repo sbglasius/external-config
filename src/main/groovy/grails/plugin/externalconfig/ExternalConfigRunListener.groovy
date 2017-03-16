@@ -22,12 +22,12 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 	private Logger log = LoggerFactory.getLogger('grails.plugin.externalconfig.ExternalConfig')
 
 	public ExternalConfigRunListener(SpringApplication application, String[] args) { }
-
+	
 	@Override
 	void environmentPrepared(ConfigurableEnvironment environment) {
 		List locations = environment.getProperty('grails.config.locations', ArrayList, [])
 		String encoding = environment.getProperty('grails.config.encoding', String, 'UTF-8')
-
+		
 		for (location in locations) {
 			MapPropertySource propertySource = null
 			if (location instanceof Class) {
@@ -39,10 +39,10 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 				if (userHome && finalLocation.startsWith('~/')) {
 					finalLocation = "file:${userHome}${finalLocation[1..-1]}"
 				}
+				finalLocation = environment.resolvePlaceholders(finalLocation) 
+				
 				Resource resource = defaultResourceLoader.getResource(finalLocation)
 				if (resource.exists()) {
-					println "resource exists: $resource.filename"
-
 					if (finalLocation.endsWith('.groovy')) {
 						propertySource = loadGroovyConfig(resource, encoding)
 					} else if (finalLocation.endsWith('.yml')) {
