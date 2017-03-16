@@ -34,7 +34,7 @@ repositories {
 and specify the snapshot version as a dependency:
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.1.0-SNAPSHOT'
+    compile 'org.grails.plugins:external-config:1.1.0-BUILD-SNAPSHOT'
 }
 ```
 
