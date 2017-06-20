@@ -86,6 +86,9 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 		new MapPropertySource(resource.filename, properties as Map)
 	}
 
+	// Spring Boot 1.4 or higher
+	void starting() { }
+	// Spring Boot 1.3
 	void started() { }
 	void contextPrepared(ConfigurableApplicationContext context) { }
 	void contextLoaded(ConfigurableApplicationContext context) { }
