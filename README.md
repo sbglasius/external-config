@@ -94,5 +94,16 @@ The plugin will skip configuration files that are not found.
 
 For `.groovy` and `.yml` files the `environments` blocks in the config file are interpreted the same way, as in `application.yml` or `application.groovy`.
 
+Scripts
+-----
+This plugin also includes two scripts, one for converting yml config, to groovy config,
+and one for converting groovy config to yml config. These scripts are not guaranteed to be 
+perfect, but you should report any edge cases for the yml to groovy config here:
+https://github.com/virtualdogbert/GroovyConfigWriter/issues
 
+Sample usage:
+```
+grails yml-to-groovy-config [ymlFile] [optional outputFile]
+grails groovy-to-yml-config [ymlFile] [optional outputFile]
+```
 

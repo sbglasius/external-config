@@ -40,6 +40,9 @@ dependencyManagement {
 }
 
 dependencies {
+    compile 'com.virtualdogbert:GroovyConfigWriter:0.1'
+    compile 'org.yaml:snakeyaml:1.18'
+
     provided "org.springframework.boot:spring-boot-starter-logging"
     provided "org.springframework.boot:spring-boot-autoconfigure"
     provided "org.grails:grails-core"
@@ -74,7 +77,7 @@ artifactory {
     publish {
         repository {
             repoKey = 'oss-snapshot-local'
-            username = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser') 
+            username = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser')
             password = System.getenv("BINTRAY_KEY") ?: project.findProperty('bintrayKey')
         }
         defaults {
