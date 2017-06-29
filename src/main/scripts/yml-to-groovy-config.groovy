@@ -43,7 +43,7 @@ if (outputFile) {
 } else {
     configWriter = new GroovyConfigWriter()
 }
-configWriter
+
 Yaml yaml = new Yaml()
 
 docs.findResults {
