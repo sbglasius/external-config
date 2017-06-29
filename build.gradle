@@ -40,8 +40,6 @@ dependencyManagement {
 }
 
 dependencies {
-    compile 'com.virtualdogbert:GroovyConfigWriter:0.1'
-    compile 'org.yaml:snakeyaml:1.18'
 
     provided "org.springframework.boot:spring-boot-starter-logging"
     provided "org.springframework.boot:spring-boot-autoconfigure"
@@ -52,6 +50,10 @@ dependencies {
     profile "org.grails.profiles:plugin"
     provided "org.springframework.boot:spring-boot-starter-tomcat"
     testCompile "org.grails:grails-plugin-testing"
+
+    runtime 'com.virtualdogbert:GroovyConfigWriter:0.1'
+    runtime 'org.yaml:snakeyaml:1.18'
+
 }
 
 grailsPublish {
