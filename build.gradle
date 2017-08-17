@@ -22,6 +22,10 @@ apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
 
+// sourceCompatibility has to be placed after applying the Java Plugin:
+// See https://stackoverflow.com/questions/21028438/gradle-sourcecompatibility-has-no-effect-to-subprojects
+sourceCompatibility=1.7
+
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
