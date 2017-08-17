@@ -55,7 +55,7 @@ dependencies {
     provided "org.springframework.boot:spring-boot-starter-tomcat"
     testCompile "org.grails:grails-plugin-testing"
 
-    runtime 'com.virtualdogbert:GroovyConfigWriter:0.1'
+    runtime 'com.virtualdogbert:GroovyConfigWriter:0.2'
     runtime 'org.yaml:snakeyaml:1.18'
 
 }
