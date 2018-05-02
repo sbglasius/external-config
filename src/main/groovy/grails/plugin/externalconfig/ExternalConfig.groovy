@@ -60,7 +60,7 @@ trait ExternalConfig implements EnvironmentAware {
 
     @Override
     void setEnvironment(Environment environment) {
-        List locations = environment.getProperty('grails.config.locations', ArrayList, [])
+        List locations = environment.getProperty('grails.config.locations', List, [] )
         String encoding = environment.getProperty('grails.config.encoding', String, 'UTF-8')
         String defaultConfigPrefix =  this.externalConfigPrefix ?:
                 environment.getProperty(this.externalConfigKey,String,"app")
