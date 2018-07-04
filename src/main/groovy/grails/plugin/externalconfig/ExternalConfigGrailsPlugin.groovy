@@ -20,7 +20,11 @@ Load configs with grails.config.locations like in Grails 2.x
     def license = "APACHE"
 
     // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
+    def developers = [ 
+        [ name: "Sudhir Nimavat", url: "https://github.com/snimavat" ],
+        [ name: "Dennie de Lange", url: "https://github.com/tkvw" ],
+        [ name: "neilabdev", url: "https://github.com/neilabdev" ],
+    ]
 
     // Location of the plugin's issue tracker.
     def issueManagement = [ system: "GitHub", url: "https://github.com/sbglasius/external-config/issues" ]
