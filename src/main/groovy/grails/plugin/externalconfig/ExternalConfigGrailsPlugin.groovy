@@ -31,13 +31,4 @@ Load configs with grails.config.locations like in Grails 2.x
 
     // Online location of the plugin's browseable source code.
     def scm = [ url: "https://github.com/sbglasius/external-config" ]
-
-
-    void doWithDynamicMethods() {
-
-        for (domainClass in grailsApplication.domainClasses) {
-
-             print("domainClass: ${domainClass}")
-        }
-    }
 }
