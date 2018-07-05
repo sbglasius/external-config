@@ -20,7 +20,7 @@
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 
-description("Converts a yml config, to a groovy config") {
+description("Converts a groovy config, to a yml config") {
     usage "groovy-to-yml-config [ymlFile] [optional outputFile] [optional indent] [optional style]"
     argument name: 'groovy', description: 'The groovy input file.'
     argument name: 'outputFile', description: 'The optional output file. If none is provided, then the output will go to System.out.', required: false
