@@ -56,34 +56,10 @@ trait ExternallyConfigurable {
     void configureEnvironment(Environment environment) {
         List locations = environment.getProperty('grails.config.locations', List, [])
         String encoding = environment.getProperty('grails.config.encoding', String, 'UTF-8')
-        String defaultConfigPrefix =  this.externalConfigPrefix ?:
-                environment.getProperty(this.externalConfigKey,String,"app")
 
-        this.externalConfigEnvironmentNames.each {
-            try {
-                def external_config = ((Context)(new InitialContext().lookup("java:comp/env"))).lookup("${it}")
+        locations += variableNameList(environment)
+        locations += systemPropertyNameList(environment)
 
-                if(external_config) {
-                    log.info("Loading configuration: $external_config")
-                    locations <<  "${external_config}"
-                }
-            } catch (Exception e) {
-                log.debug("External configuration lookup failed: " + e)
-            }
-        }
-
-        [
-                defaultConfigPrefix,"database","logging","external"
-        ].each {
-            String configKey = it == defaultConfigPrefix ?
-                    "${defaultConfigPrefix}.config" :
-                    "${defaultConfigPrefix}.${it}.config"
-            String configPath = System.properties[configKey]
-            if (configPath) {
-                log.info("Loading configuration: $configPath")
-                locations << "file:" + configPath
-            }
-        }
         for (location in locations) {
             MapPropertySource propertySource = null
             if (location instanceof Class) {
@@ -116,6 +92,48 @@ trait ExternallyConfigurable {
                 environment.propertySources.addFirst(propertySource)
             }
         }
+    }
+
+    String getDefaultExternalConfigPrefix(Environment environment) {
+        String defaultConfigPrefix = this.externalConfigPrefix ?:
+                environment.getProperty(this.externalConfigKey,String,"app")
+        return defaultConfigPrefix
+    }
+
+    private List variableNameList(Environment environment) {
+        List locations = []
+
+        this.externalConfigEnvironmentNames.each {
+            try {
+                def external_config = ((Context)(new InitialContext().lookup("java:comp/env"))).lookup("${it}")
+
+                if(external_config) {
+                    log.info("Loading configuration: $external_config")
+                    locations <<  "${external_config}"
+                }
+            } catch (Exception e) {
+                log.debug("External configuration lookup failed: " + e)
+            }
+        }
+        return locations
+    }
+
+    private List systemPropertyNameList(Environment environment) {
+        List locations = []
+        String defaultConfigPrefix = this.getDefaultExternalConfigPrefix(environment)
+        [
+                defaultConfigPrefix,"database","logging","external"
+        ].each {
+            String configKey = it == defaultConfigPrefix ?
+                    "${defaultConfigPrefix}.config" : // appName.config
+                    "${defaultConfigPrefix}.${it}.config" // appName.[database,logging,exteral].config
+            String configPath = System.properties[configKey]
+            if (configPath) {
+                log.info("Loading configuration: $configPath")
+                locations << "file:" + configPath
+            }
+        }
+        return locations
     }
 
     private MapPropertySource loadClassConfig(Class location) {
