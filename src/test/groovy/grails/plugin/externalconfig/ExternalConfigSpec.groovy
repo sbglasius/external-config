@@ -8,9 +8,6 @@ import org.springframework.core.env.Environment
 import org.springframework.core.env.MapPropertySource
 import spock.lang.Specification
 
-import javax.naming.Context
-import javax.naming.InitialContext
-
 @TestMixin(GrailsUnitTestMixin)
 class ExternalConfigSpec extends Specification {
 
