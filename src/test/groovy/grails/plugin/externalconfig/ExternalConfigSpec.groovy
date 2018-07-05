@@ -1,15 +1,14 @@
 package grails.plugin.externalconfig
 
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
+
 import grails.web.servlet.context.support.GrailsEnvironment
+import org.grails.testing.GrailsUnitTest
 import org.springframework.core.env.AbstractEnvironment
 import org.springframework.core.env.Environment
 import org.springframework.core.env.MapPropertySource
 import spock.lang.Specification
 
-@TestMixin(GrailsUnitTestMixin)
-class ExternalConfigSpec extends Specification {
+class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
     Environment environment = new GrailsEnvironment(grailsApplication)
     ExternalConfigRunListener listener = new ExternalConfigRunListener(null, null)
