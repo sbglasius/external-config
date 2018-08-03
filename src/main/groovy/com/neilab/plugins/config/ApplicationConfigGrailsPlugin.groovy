@@ -10,9 +10,7 @@ class ApplicationConfigGrailsPlugin extends Plugin {
     def title = "Application Config"
     def author = "neilabdev"
     def authorEmail = "neilabdev@users.noreply.github.com"
-    def description = '''\
-Load configs with grails.config.locations like in Grails 2.x
-'''
+    def description = '''Allows external configuration via grails.config.locations, JNDI, and system properties'''
     def profiles = ['web']
 
     // URL to the plugin's documentation

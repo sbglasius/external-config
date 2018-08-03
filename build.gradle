@@ -59,21 +59,21 @@ dependencies {
     runtime 'org.yaml:snakeyaml:1.18'
 
 }
-/*
+
 grailsPublish {
     user = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser')
     key = System.getenv("BINTRAY_KEY") ?: project.findProperty('bintrayKey')
 
     userOrg = "grails"
 
-    githubSlug = 'https://github.com/sbglasius/external-config'
+    githubSlug = 'https://github.com/neilabdev/application-config'
 
     license {
         name = 'Apache-2.0'
     }
-    title = "External Config"
-    desc = "Load configs with grails.config.locations like in Grails 2.x"
-    developers = [sbglasius: "Søren Berg Glasius"]
+    title = "Application Config"
+    desc = "Allows external configuration via grails.config.locations, JNDI, and system properties"
+    developers = [neilabdev: "neilabdev"]
     portalUser = System.getenv("GRAILS_PORTAL_USER") ?: project.findProperty('grailsPortalUser')
     portalPassword = System.getenv("GRAILS_PORTAL_PASSWORD") ?: project.findProperty('grailsPortalPassword')
 }
@@ -91,4 +91,3 @@ artifactory {
         }
     }
 }
-*/
