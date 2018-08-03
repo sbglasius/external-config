@@ -1,4 +1,4 @@
-package grails.plugin.externalconfig
+package com.neilab.plugins.config
 
 import groovy.transform.CompileStatic
 import org.springframework.boot.SpringApplication
@@ -7,8 +7,8 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment
 
 @CompileStatic
-class ExternalConfigRunListener implements SpringApplicationRunListener, ExternallyConfigurable {
-	public ExternalConfigRunListener(SpringApplication application, String[] args) { }
+class ApplicationConfigRunListener implements SpringApplicationRunListener, ExternallyConfigurable {
+	public ApplicationConfigRunListener(SpringApplication application, String[] args) { }
 
 	@Override
 	void environmentPrepared(ConfigurableEnvironment environment) {

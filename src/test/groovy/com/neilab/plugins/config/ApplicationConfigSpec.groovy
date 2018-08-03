@@ -1,4 +1,4 @@
-package grails.plugin.externalconfig
+package com.neilab.plugins.config
 
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
@@ -9,10 +9,10 @@ import org.springframework.core.env.MapPropertySource
 import spock.lang.Specification
 
 @TestMixin(GrailsUnitTestMixin)
-class ExternalConfigSpec extends Specification {
+class ApplicationConfigSpec extends Specification {
 
     Environment environment = new GrailsEnvironment(grailsApplication)
-    ExternalConfigRunListener listener = new ExternalConfigRunListener(null, null)
+    ApplicationConfigRunListener listener = new ApplicationConfigRunListener(null, null)
 
     def "when getting config without grails.config.location set, the config does not change"() {
         when:

@@ -1,4 +1,4 @@
-package grails.plugin.externalconfig
+package com.neilab.plugins.config
 
 import org.grails.config.NavigableMapPropertySource
 import org.grails.config.yaml.YamlPropertySourceLoader
@@ -15,7 +15,7 @@ import javax.naming.InitialContext
 trait ExternallyConfigurable {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
-    private Logger log = LoggerFactory.getLogger('grails.plugin.externalconfig.ExternalConfig')
+    private Logger log = LoggerFactory.getLogger('com.neilab.plugins.config.ApplicationConfig')
 
     /**
      * Returns the name of the prefix to be used for config file property names. If null is returned, the name returned

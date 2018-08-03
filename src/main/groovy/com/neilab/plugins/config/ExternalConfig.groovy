@@ -1,4 +1,5 @@
-package grails.plugin.externalconfig
+package com.neilab.plugins.config
+
 import groovy.transform.CompileStatic
 import org.springframework.context.EnvironmentAware
 import org.springframework.core.env.Environment
@@ -10,3 +11,4 @@ trait ExternalConfig implements EnvironmentAware, ExternallyConfigurable {
        configureEnvironment(environment)
     }
 }
+

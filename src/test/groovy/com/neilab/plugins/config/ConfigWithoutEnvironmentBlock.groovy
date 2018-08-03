@@ -1,4 +1,4 @@
-package grails.plugin.externalconfig
+package com.neilab.plugins.config
 
 test {
     external {
