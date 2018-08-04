@@ -1,1 +1,1 @@
-org.springframework.boot.SpringApplicationRunListener=grails.plugin.externalconfig.ExternalConfigRunListener
+org.springframework.boot.SpringApplicationRunListener=com.neilab.plugins.config.ApplicationConfigRunListener

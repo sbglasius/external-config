@@ -1,4 +1,4 @@
-package external.config
+package com.neilab.plugins.config
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration

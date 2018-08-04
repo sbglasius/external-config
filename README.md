@@ -1,22 +1,15 @@
-External-Config
+Application-Config
 ===============
-[![Build Status](https://travis-ci.org/sbglasius/external-config.svg?branch=master)](https://travis-ci.org/sbglasius/external-config)
+[![Build Status](https://travis-ci.org/neilabdev/application-config.svg?branch=master)](https://travis-ci.org/neilabdev/application-config)
 
-This plugin will mimic the Grails 2 way of handling external configurations defined in `grails.config.locations`.
-
-
-IMPORTANT!
-----------
-The External Config Plugin (1.1.0 and above) no longer needs to implement `ExternalConfig` on `Application.groovy`. It now uses a `SpringApplicationRunListener`and hooks into the startup automagically. So if you used the plugin in prior versions, please remove `implements ExternalConfig` from `Application.groovy`
-
+This plugin based on the amazing work started in plugin  [external-config](http://plugins.grails.org/plugin/grails/external-config) by [Sudhir Nimavat](https://github.com/snimavat) and  [Dennie de Lange](https://github.com/tkvw),
+ which mimiced the Grails 2 way of handling external configurations defined in `grails.config.locations`; with the necessary additions to allow configurations via command line, system properties, and JNDI.
 
 Contributors
 ------------
 
-* [Sudhir Nimavat](https://github.com/snimavat) 
-* [Dennie de Lange](https://github.com/tkvw)
+* [neilabdev](https://github.com/neilabdev)
 
-Thank you!
 
 Installation
 ------------
@@ -25,23 +18,7 @@ Add dependency to your `build.gradle`:
 
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.1.2'
-}
-```
-
-To use a snapshot-version
-
-add JFrog OSS Repository to the `repositories`:
-```
-repositories {
-    maven { url "https://oss.jfrog.org/repo/" }
-}
-```
-
-and specify the snapshot version as a dependency:
-```
-dependencies {
-    compile 'org.grails.plugins:external-config:1.1.3-BUILD-SNAPSHOT'
+    compile 'com.neilab.plugins:application-config:1.1.3'
 }
 ```
 
@@ -87,6 +64,47 @@ grails.config.locations = [
 ]
 ```
 
+You may also include external configs using '-D' arguments which match the system properties
+the application is seeking, preceded by an application prefix determined by *info.app.name* in your default *application.yml*, *application.groovy*  or "app" if none exists. By default the following should work:
+
+```
+-DappName.config="/path/to/config"
+-DappName.external.config="/path/to/config"
+-DappName.database.config="/path/to/config"
+-DappName.logging.config="/path/to/config"
+
+```
+
+or using JNDI variables *CONFIG*, *EXTERNAL_CONFIG*, *LOGGING_CONFIG*, *DATABASE_CONFIG* in tomcat for example:
+
+```xml
+<Context path="" docBase="/path/to/app.war"  reloadable="false">
+        <Environment name="APP_CONFIG"
+                value="file:/path/to/external_config.groovy"
+                type="java.lang.String"/>
+        <Environment name="DATABASE_CONFIG"
+                value="file:/path/to/external_config.database.groovy"
+                type="java.lang.String"/>
+</Context>
+```
+
+While  no-longer necessary as of version 1.1.0 of [external-config](http://plugins.grails.org/plugin/grails/external-config), which this fork is based, for comparability you  may edit your Grails projects `Application.groovy` and implement the trait `com.neilab.plugins.config.ApplicationConfig` (formally ExternalConfig): 
+
+```
+import com.neilab.plugins.config.ApplicationConfig
+
+class Application extends GrailsAutoConfiguration implements ApplicationConfig {
+    static void main(String[] args) {
+        GrailsApp.run(Application, args)
+    }
+}
+```
+
+This above is necessary only when *ApplicationConfigRunListener* is not executed, and   personally  have used it only when developing the plugin as an inline plugin where *SpringApplicationRunListener* was not loaded.
+
+
+Notes
+-----
 Notice, that `~/` references the users `$HOME` directory.
 Notice, that using a system property you should use single quotes because otherwise it's interpreted as a Gstring.
 
@@ -94,13 +112,18 @@ The plugin will skip configuration files that are not found.
 
 For `.groovy` and `.yml` files the `environments` blocks in the config file are interpreted the same way, as in `application.yml` or `application.groovy`.
 
-**Getting configuration from another folder than /conf on classpath without moving it with Gradle script**
-
-If you wish to make your Grails application pull external configuration from classpath when running locally, but you do not wish to get it packed into the assembled war file (i.e. place the external configuration file in e.g. /external-config instead of /conf), then you can include the external configuration file to the classpath by adding the following line to build.gradle:dependencies
-```
-providedCompile files('external-config') // providedCompile to ensure that external config is not included in the war file
-```
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
+
+**Using IntelliJ or gradle to specify configurations via system properties**
+
+When passing system properties via *VM Options* in IntelliJ or *-D* properties in gradle, it may be necessary to assign the parameters to the app via *bootRun* in your *build.gradle* configuration.
+
+```groovy
+//build.gradle
+bootRun {
+    systemProperties = System.properties
+}
+```
 
 Scripts
 -----
@@ -114,4 +137,3 @@ Sample usage:
 grails yml-to-groovy-config [ymlFile] [optional outputFile]
 grails groovy-to-yml-config [ymlFile] [optional outputFile]
 ```
-

@@ -1,4 +1,4 @@
-package grails.plugin.externalconfig
+package com.neilab.plugins.config
 
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
@@ -9,10 +9,10 @@ import org.springframework.core.env.MapPropertySource
 import spock.lang.Specification
 
 @TestMixin(GrailsUnitTestMixin)
-class ExternalConfigSpec extends Specification {
+class ApplicationConfigSpec extends Specification {
 
     Environment environment = new GrailsEnvironment(grailsApplication)
-    ExternalConfigRunListener listener = new ExternalConfigRunListener(null, null)
+    ApplicationConfigRunListener listener = new ApplicationConfigRunListener(null, null)
 
     def "when getting config without grails.config.location set, the config does not change"() {
         when:
@@ -128,6 +128,29 @@ class ExternalConfigSpec extends Specification {
         cleanup:
         file.delete()
 
+    }
+
+    def "when getting config from properties argument"() {
+        given:
+            def props = System.getProperties()
+            def configKey = listener.getDefaultExternalConfigPrefix(environment)
+            def file = File.createTempFile("other-external-config-temp-config",'.groovy')
+            file.text = """\
+            config.value = 'expected-value'
+            nested { config { value = 'nested-value' } }
+            """.stripIndent()
+        and:
+            props.setProperty("${configKey}.config", "${file.absolutePath}")
+
+        when:
+            listener.environmentPrepared(environment)
+
+        then:
+            getConfigProperty('config.value') == 'expected-value'
+            getConfigProperty('nested.config.value') == 'nested-value'
+
+        cleanup:
+            file.delete()
     }
 
     def "when getting groovy config with file in classpath"() {
