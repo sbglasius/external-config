@@ -3,7 +3,7 @@ Application-Config
 [![Build Status](https://travis-ci.org/neilabdev/application-config.svg?branch=master)](https://travis-ci.org/neilabdev/application-config)
 
 This plugin based on the amazing work started in plugin  [external-config](http://plugins.grails.org/plugin/grails/external-config) by [Sudhir Nimavat](https://github.com/snimavat) and  [Dennie de Lange](https://github.com/tkvw),
- will mimiced the Grails 2 way of handling external configurations defined in `grails.config.locations`; with the necessary additions to allow configurations via command line, system properties, and JNDI.
+ which mimiced the Grails 2 way of handling external configurations defined in `grails.config.locations`; with the necessary additions to allow configurations via command line, system properties, and JNDI.
 
 Contributors
 ------------
@@ -116,7 +116,7 @@ Alternatively, you can make a gradle script to move the external configuration f
 
 **Using IntelliJ or gradle to specify configurations via system properties**
 
-Passing system properties via *VM Options* in IntelliJ or *-D* properties via gradle, it may be necessary to assign the parameters to the app via *bootRun* in your *build.gradle* configuration.
+When passing system properties via *VM Options* in IntelliJ or *-D* properties in gradle, it may be necessary to assign the parameters to the app via *bootRun* in your *build.gradle* configuration.
 
 ```groovy
 //build.gradle
