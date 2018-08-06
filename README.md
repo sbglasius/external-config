@@ -112,7 +112,8 @@ or using JNDI variables *CONFIG*, *EXTERNAL_CONFIG*, *LOGGING_CONFIG*, *DATABASE
 </Context>
 ```
 
-
+Notes
+-----
 Notice, that `~/` references the users `$HOME` directory.
 Notice, that using a system property you should use single quotes because otherwise it's interpreted as a Gstring.
 
@@ -127,6 +128,17 @@ If you wish to make your Grails application pull external configuration from cla
 providedCompile files('external-config') // providedCompile to ensure that external config is not included in the war file
 ```
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
+
+**Using IntelliJ or gradle to specify configurations via system properties**
+
+When passing system properties via *VM Options* in IntelliJ or *-D* properties in gradle, it may be necessary to assign the parameters to the app via *bootRun* in your *build.gradle* configuration.
+
+```groovy
+//build.gradle
+bootRun {
+    systemProperties = System.properties
+}
+```
 
 Scripts
 -----
