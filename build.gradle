@@ -11,7 +11,7 @@ buildscript {
     }
 }
 plugins {
-    id "com.jfrog.artifactory" version "4.4.0"
+   // id "com.jfrog.artifactory" version "4.4.0"
 }
 
 version "$pluginVersion"
@@ -53,7 +53,7 @@ dependencies {
     runtime 'org.yaml:snakeyaml:1.18'
 
 }
-
+/*
 grailsPublish {
     user = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser')
     key = System.getenv("BINTRAY_KEY") ?: project.findProperty('bintrayKey')
@@ -85,3 +85,4 @@ artifactory {
         }
     }
 }
+*/

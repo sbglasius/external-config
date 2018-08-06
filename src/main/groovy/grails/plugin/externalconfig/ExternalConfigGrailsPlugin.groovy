@@ -23,6 +23,7 @@ Load configs with grails.config.locations like in Grails 2.x
     def developers = [ 
         [ name: "Sudhir Nimavat", url: "https://github.com/snimavat" ],
         [ name: "Dennie de Lange", url: "https://github.com/tkvw" ],
+        [ name: "neilabdev", url: "https://github.com/neilabdev" ],
     ]
 
     // Location of the plugin's issue tracker.

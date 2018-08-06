@@ -15,6 +15,7 @@ Contributors
 
 * [Sudhir Nimavat](https://github.com/snimavat) 
 * [Dennie de Lange](https://github.com/tkvw)
+* [neilabdev](https://github.com/neilabdev)
 
 Thank you!
 
@@ -25,7 +26,7 @@ Add dependency to your `build.gradle`:
 
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.1.2'
+    compile 'org.grails.plugins:external-config:1.1.3'
 }
 ```
 
@@ -87,6 +88,32 @@ grails.config.locations = [
 ]
 ```
 
+In version 1.1.3 and above, you may also include external configs using '-D' arguments which match the system properties
+the application is seeking. By default the following should work:
+
+```
+-DappName.config="/path/to/config"
+-DappName.external.config="/path/to/config"
+-DappName.database.config="/path/to/config"
+-DappName.logging.config="/path/to/config"
+
+```
+
+or using JNDI variables *CONFIG*, *EXTERNAL_CONFIG*, *LOGGING_CONFIG*, *DATABASE_CONFIG* in tomcat for example:
+
+```xml
+<Context path="" docBase="/path/to/app.war"  reloadable="false">
+        <Environment name="APP_CONFIG"
+                value="file:/path/to/external_config.groovy"
+                type="java.lang.String"/>
+        <Environment name="DATABASE_CONFIG"
+                value="file:/path/to/external_config.database.groovy"
+                type="java.lang.String"/>
+</Context>
+```
+
+Notes
+-----
 Notice, that `~/` references the users `$HOME` directory.
 Notice, that using a system property you should use single quotes because otherwise it's interpreted as a Gstring.
 
@@ -102,6 +129,17 @@ providedCompile files('external-config') // providedCompile to ensure that exter
 ```
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
 
+**Using IntelliJ or gradle to specify configurations via system properties**
+
+When passing system properties via *VM Options* in IntelliJ or *-D* properties in gradle, it may be necessary to assign the parameters to the app via *bootRun* in your *build.gradle* configuration.
+
+```groovy
+//build.gradle
+bootRun {
+    systemProperties = System.properties
+}
+```
+
 Scripts
 -----
 This plugin also includes two scripts, one for converting yml config, to groovy config,
@@ -114,4 +152,3 @@ Sample usage:
 grails yml-to-groovy-config [ymlFile] [optional outputFile]
 grails groovy-to-yml-config [ymlFile] [optional outputFile]
 ```
-
