@@ -1,7 +1,9 @@
 package grails.plugin.externalconfig
 
+import grails.util.Environment
 import groovy.transform.CompileStatic
 import org.grails.config.NavigableMapPropertySource
+import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,11 +23,11 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 	private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
 	private Logger log = LoggerFactory.getLogger('grails.plugin.externalconfig.ExternalConfig')
 
-	public ExternalConfigRunListener(SpringApplication application, String[] args) { }
+    ExternalConfigRunListener(SpringApplication application, String[] args) { }
 	
 	@Override
 	void environmentPrepared(ConfigurableEnvironment environment) {
-		List locations = environment.getProperty('grails.config.locations', ArrayList, [])
+		List locations = environment.getProperty('grails.config.locations', List, [])
 		String encoding = environment.getProperty('grails.config.encoding', String, 'UTF-8')
 		
 		for (location in locations) {
@@ -43,8 +45,9 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 				
 				Resource resource = defaultResourceLoader.getResource(finalLocation)
 				if (resource.exists()) {
+                    Map currentProperties = getCurrentConfig(environment)
 					if (finalLocation.endsWith('.groovy')) {
-						propertySource = loadGroovyConfig(resource, encoding)
+						propertySource = loadGroovyConfig(resource, encoding, currentProperties)
 					} else if (finalLocation.endsWith('.yml')) {
 						environment.activeProfiles
 						propertySource = loadYamlConfig(resource)
@@ -64,14 +67,17 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 
 	private MapPropertySource loadClassConfig(Class location) {
 		log.info("Loading config class {}", location.name)
-		Map properties = new ConfigSlurper(grails.util.Environment.current.name).parse((Class) location)?.flatten()
+		Map properties = new ConfigSlurper(Environment.current.name).parse((Class) location)?.flatten()
 		new MapPropertySource(location.toString(), properties)
 	}
 
-	private MapPropertySource loadGroovyConfig(Resource resource, String encoding) {
+	private MapPropertySource loadGroovyConfig(Resource resource, String encoding, Map currentConfig) {
 		log.info("Loading groovy config file {}", resource.URI)
 		String configText = resource.inputStream.getText(encoding)
-		Map properties = configText ? new ConfigSlurper(grails.util.Environment.current.name).parse(configText)?.flatten() : [:]
+		ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
+		slurper.binding = currentConfig
+        ConfigObject configObject = slurper.parse(configText)
+        Map properties = configText ? configObject?.flatten() : [:]
 		new MapPropertySource(resource.filename, properties)
 	}
 
@@ -95,4 +101,8 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 	void contextPrepared(ConfigurableApplicationContext context) { }
 	void contextLoaded(ConfigurableApplicationContext context) { }
 	void finished(ConfigurableApplicationContext context, Throwable exception) { }
+
+    static Map getCurrentConfig(ConfigurableEnvironment environment) {
+        return new PropertySourcesConfig(environment.propertySources)
+    }
 }

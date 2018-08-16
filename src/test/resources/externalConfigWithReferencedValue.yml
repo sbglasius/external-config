@@ -1,0 +1,3 @@
+external:
+  config: yml-${global.config}
+  userHome: test-${USER_HOME}

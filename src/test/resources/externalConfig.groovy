@@ -1,1 +1,3 @@
-external.config = 'expected-value'
+groovy {
+    config = 'groovy-expected-value'
+}
