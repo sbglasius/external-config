@@ -24,7 +24,8 @@ apply plugin: "org.grails.grails-plugin-publish"
 
 // sourceCompatibility has to be placed after applying the Java Plugin:
 // See https://stackoverflow.com/questions/21028438/gradle-sourcecompatibility-has-no-effect-to-subprojects
-sourceCompatibility=1.7
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
 
 ext {
     grailsVersion = project.grailsVersion
@@ -68,8 +69,6 @@ grailsPublish {
     title = "External Config"
     desc = "Load configs with grails.config.locations like in Grails 2.x"
     developers = [sbglasius: "Søren Berg Glasius"]
-    portalUser = System.getenv("GRAILS_PORTAL_USER") ?: project.findProperty('grailsPortalUser')
-    portalPassword = System.getenv("GRAILS_PORTAL_PASSWORD") ?: project.findProperty('grailsPortalPassword')
 }
 
 artifactory {

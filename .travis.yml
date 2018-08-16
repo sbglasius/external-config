@@ -1,12 +1,14 @@
-sudo: false
+sudo: true
 cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
   - $HOME/.m2/repositories/
+  - $HOME/.bountycastel/
 language: groovy
 jdk:
-- openjdk8
+- openjdk7
+before_install: ./travis-before-install.sh
 install: true
 script: ./travis-build.sh
 env:
