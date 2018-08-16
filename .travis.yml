@@ -6,7 +6,7 @@ cache:
   - $HOME/.m2/repositories/
 language: groovy
 jdk:
-- openjdk7
+- openjdk8
 install: true
 script: ./travis-build.sh
 env:

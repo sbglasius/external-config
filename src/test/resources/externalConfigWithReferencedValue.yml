@@ -1,0 +1,3 @@
+external:
+  config: yml-${global.config}
+  javaHome: test-${JAVA_HOME}
