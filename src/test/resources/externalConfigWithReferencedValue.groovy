@@ -1,4 +1,4 @@
 external {
     config = "groovy-${global.config}"
-    userHome = "test-${USER_HOME}"
+    javaHome = "test-${JAVA_HOME}"
 }

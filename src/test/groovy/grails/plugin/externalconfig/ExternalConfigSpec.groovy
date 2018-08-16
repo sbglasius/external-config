@@ -161,7 +161,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
         then:
         getConfigProperty("external.config") == expectedValue
-        getConfigProperty("external.userHome") == 'test-'+System.getenv('USER_HOME')
+        getConfigProperty("external.javaHome") == 'test-'+System.getenv('JAVA_HOME')
         where:
         configExtension | expectedValue
         'yml'           | 'yml-global-value'
