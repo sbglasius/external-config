@@ -25,7 +25,7 @@ Add dependency to your `build.gradle`:
 
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.1.2'
+    compile 'org.grails.plugins:external-config:1.2.0'
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 and specify the snapshot version as a dependency:
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.1.3-BUILD-SNAPSHOT'
+    compile 'org.grails.plugins:external-config:1.3.0.BUILD-SNAPSHOT'
 }
 ```
 
@@ -87,7 +87,31 @@ grails.config.locations = [
 ]
 ```
 
-Notice, that `~/` references the users `$HOME` directory.
+It is also possible to define it in an environment specific block (groovy):
+```$xslt
+environments {
+    test {
+        grails {
+            config {
+                locations = [...]
+            }
+        }
+    }
+}   
+```
+
+or (yml)
+
+```
+environments:
+    test:
+        grails:
+            config:
+                locations:
+                - ... 
+```
+
+`~/` references the users `$HOME` directory.
 Notice, that using a system property you should use single quotes because otherwise it's interpreted as a Gstring.
 
 The plugin will skip configuration files that are not found. 
