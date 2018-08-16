@@ -4,13 +4,15 @@ cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
-  - $HOME/.bountycastel/
 jdk:
 - openjdk7
-before_script:
-- rm -rf build
-before_install: ./travis-before-install.sh
-script: ./travis-build.sh
+before_install:
+# Workaround for https://github.com/gradle/gradle/issues/2421:
+# download all Gradle distributions with openjdk8
+- JAVA_HOME=$(jdk_switcher home openjdk8) ./gradlew compile testCompile
+install: "/bin/true"
+script:
+- JAVA_HOME=$(jdk_switcher home openjdk7) "./travis-build.sh"
 env:
   global:
   - GIT_NAME="Søren Berg Glasius"
