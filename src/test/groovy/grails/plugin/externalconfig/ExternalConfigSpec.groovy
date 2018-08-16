@@ -34,6 +34,18 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         environment.properties == old(environment.properties)
     }
 
+    def "getting configuration from environment specific location"() {
+        given:
+        addToEnvironment('environments.test.grails.config.locations':["classpath:/externalConfig.yml"])
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then:
+        getConfigProperty("yml.config") == 'yml-expected-value'
+
+    }
+
     def "when getting config with config class, expect the config to be loaded"() {
         given:
         addToEnvironment('grails.config.locations': [ConfigWithoutEnvironmentBlock])
