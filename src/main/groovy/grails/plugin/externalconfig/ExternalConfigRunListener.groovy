@@ -36,8 +36,9 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 
         for (location in locations) {
             MapPropertySource propertySource = null
+            Map currentProperties = getCurrentConfig(environment)
             if (location instanceof Class) {
-                propertySource = loadClassConfig(location as Class)
+                propertySource = loadClassConfig(location as Class, currentProperties)
             } else {
                 String finalLocation = location.toString()
                 // Replace ~ with value from system property 'user.home' if set
@@ -49,7 +50,6 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 
                 Resource resource = defaultResourceLoader.getResource(finalLocation)
                 if (resource.exists()) {
-                    Map currentProperties = getCurrentConfig(environment)
                     if (finalLocation.endsWith('.groovy')) {
                         propertySource = loadGroovyConfig(resource, encoding, currentProperties)
                     } else if (finalLocation.endsWith('.yml')) {
@@ -69,9 +69,11 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         }
     }
 
-    private MapPropertySource loadClassConfig(Class location) {
+    private MapPropertySource loadClassConfig(Class location, Map currentConfig) {
         log.info("Loading config class {}", location.name)
-        Map properties = new ConfigSlurper(Environment.current.name).parse((Class) location)?.flatten()
+        ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
+        slurper.binding = currentConfig
+        Map properties = slurper.parse((Class) location)?.flatten()
         new MapPropertySource(location.toString(), properties)
     }
 

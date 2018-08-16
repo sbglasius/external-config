@@ -68,6 +68,35 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         getConfigProperty('test.external.config') == 'expected-value-test'
     }
 
+    def "when getting config with config class that has a canonical config, expect the config to be loaded"() {
+        given:
+        addToEnvironment(
+                'global.config': 'global',
+                'grails.config.locations': [ConfigWithCanonicalParameter])
+
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then:
+        getConfigProperty('test.external.config') == 'global-value'
+    }
+
+    def "when getting config with config class that has a two levels of canonical config, expect the config to be loaded"() {
+        given:
+        addToEnvironment(
+                'global.config': 'global',
+                'grails.config.locations': [ConfigWithCanonicalParameter, ConfigWithSecondLevelCanonicalParameter])
+
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then:
+        getConfigProperty('test.external.config') == 'global-value'
+        getConfigProperty('second.external.config') == 'value-of-global-value'
+    }
+
     def "when getting config with file in user.home"() {
         given: "The home directory of the user"
         def dir = new File("${System.getProperty('user.home')}/.grails")
