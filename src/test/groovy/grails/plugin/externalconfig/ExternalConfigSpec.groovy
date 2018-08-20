@@ -220,38 +220,6 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         getConfigProperty('yml.config') == 'expected-value-test'
     }
 
-    def "when merging multiple configs the expected values are in the final result"() {
-        given:
-            addToEnvironment('grails.config.locations': [
-                    'classpath:/mergeExternalConfig.yml',
-                    'classpath:/mergeExternalConfig.groovy',
-                    'classpath:/mergeExternalConfig.properties'
-            ])
-        when:
-            listener.environmentPrepared(environment)
-
-        then:
-            getConfigProperty('base.config.yml') == 'yml-expected-value'
-            getConfigProperty('base.config.groovy') == 'groovy-expected-value'
-            getConfigProperty('base.config.properties') == 'properties-expected-value'
-    }
-
-    def "when merging multiple groovy configs the expected values are in the final result"() {
-        given:
-            addToEnvironment('base.config.global':'global-expected-value',
-                    'grails.config.locations': [
-                    'classpath:/mergeExternalConfig.groovy',
-                    'classpath:/mergeExternalConfig2.groovy',
-            ])
-        when:
-            listener.environmentPrepared(environment)
-
-        then:
-            getConfigProperty('base.config.global') == 'global-expected-value'
-            getConfigProperty('base.config.groovy') == 'groovy-expected-value'
-            getConfigProperty('base.config.groovy2') == 'groovy2-expected-value'
-    }
-
     private void addToEnvironment(Map properties = [:]) {
         NavigableMap navigableMap = new NavigableMap()
         navigableMap.merge(properties, true)
