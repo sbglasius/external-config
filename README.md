@@ -13,8 +13,13 @@ The External Config Plugin (1.1.0 and above) no longer needs to implement `Exter
 Contributors
 ------------
 
-* [Sudhir Nimavat](https://github.com/snimavat) 
+Major contributors
+
+* [Jesper Steen Møller](https://github.com/jespersm)
+* [Tucker J. Pelletier](https://github.com/virtualdogbert)
 * [Dennie de Lange](https://github.com/tkvw)
+* [Sudhir Nimavat](https://github.com/snimavat) 
+* [Anders Aaberg](https://github.com/andersaaberg)
 
 Thank you!
 
@@ -25,7 +30,7 @@ Add dependency to your `build.gradle`:
 
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.2.0'
+    compile 'org.grails.plugins:external-config:1.2.2'
 }
 ```
 
