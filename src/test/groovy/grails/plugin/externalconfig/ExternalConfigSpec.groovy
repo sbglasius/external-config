@@ -4,9 +4,7 @@ import grails.web.servlet.context.support.GrailsEnvironment
 import org.grails.config.NavigableMap
 import org.grails.config.NavigableMapPropertySource
 import org.grails.testing.GrailsUnitTest
-import org.springframework.core.env.AbstractEnvironment
 import org.springframework.core.env.ConfigurableEnvironment
-import org.springframework.core.env.Environment
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -220,6 +218,22 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
         then:
         getConfigProperty('yml.config') == 'expected-value-test'
+    }
+
+    def "when merging multiple configs the expected values are in the final result"() {
+        given:
+            addToEnvironment('grails.config.locations': [
+                    'classpath:/mergeExternalConfig.yml',
+                    'classpath:/mergeExternalConfig.groovy',
+                    'classpath:/mergeExternalConfig.properties'
+            ])
+        when:
+            listener.environmentPrepared(environment)
+
+        then:
+            getConfigProperty('base.config.yml') == 'yml-expected-value'
+            getConfigProperty('base.config.groovy') == 'groovy-expected-value'
+            getConfigProperty('base.config.properties') == 'properties-expected-value'
     }
 
 
