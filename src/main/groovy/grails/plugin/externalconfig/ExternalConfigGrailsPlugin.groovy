@@ -4,7 +4,7 @@ import grails.plugins.*
 
 class ExternalConfigGrailsPlugin extends Plugin {
 
-    def grailsVersion = "3.0.0 > *"
+    def grailsVersion = "3.3.0 > *"
     def pluginExcludes = []
 
     def title = "External Config" // Headline display name of the plugin

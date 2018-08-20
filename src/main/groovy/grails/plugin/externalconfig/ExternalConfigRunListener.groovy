@@ -2,6 +2,7 @@ package grails.plugin.externalconfig
 
 import grails.util.Environment
 import groovy.transform.CompileStatic
+import org.grails.config.NavigableMap
 import org.grails.config.NavigableMapPropertySource
 import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
@@ -69,6 +70,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         }
     }
 
+    // Load groovy config from classpath
     private MapPropertySource loadClassConfig(Class location, Map currentConfig) {
         log.info("Loading config class {}", location.name)
         ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
@@ -80,6 +82,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         new MapPropertySource(location.toString(), properties)
     }
 
+    // Load groovy config from resource
     private MapPropertySource loadGroovyConfig(Resource resource, String encoding, Map currentConfig) {
         log.info("Loading groovy config file {}", resource.URI)
         String configText = resource.inputStream.getText(encoding)
