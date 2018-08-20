@@ -72,8 +72,11 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     private MapPropertySource loadClassConfig(Class location, Map currentConfig) {
         log.info("Loading config class {}", location.name)
         ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-        slurper.binding = currentConfig
+        WriteFilteringMap filterMap = new WriteFilteringMap(currentConfig)
+        slurper.binding = filterMap
         Map properties = slurper.parse((Class) location)?.flatten()
+        Map writtenValues = filterMap.getWrittenValues()
+        properties.putAll(writtenValues)
         new MapPropertySource(location.toString(), properties)
     }
 
@@ -81,9 +84,12 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         log.info("Loading groovy config file {}", resource.URI)
         String configText = resource.inputStream.getText(encoding)
         ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-        slurper.binding = currentConfig
+        WriteFilteringMap filterMap = new WriteFilteringMap(currentConfig)
+        slurper.binding = filterMap
         ConfigObject configObject = slurper.parse(configText)
         Map properties = configText ? configObject?.flatten() : [:]
+        Map writtenValues = filterMap.getWrittenValues()
+        properties.putAll(writtenValues)
         new MapPropertySource(resource.filename, properties)
     }
 
