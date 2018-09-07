@@ -1,0 +1,5 @@
+rootProject.name = "external-config-test"
+
+
+include ':external-config'
+project(':external-config').projectDir = new File(settingsDir, '../../external-config')
