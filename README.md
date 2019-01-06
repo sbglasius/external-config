@@ -123,6 +123,28 @@ The plugin will skip configuration files that are not found.
 
 For `.groovy` and `.yml` files the `environments` blocks in the config file are interpreted the same way, as in `application.yml` or `application.groovy`.
 
+**Wildcard support**
+
+It is possible to use `*` as wildcards in the filename part of the configuration:
+
+```
+grails:
+    config:
+        locations:
+            - file:/etc/app/myconfig*.groovy
+            - ~/.grails/myconfig*.groovy
+```
+or
+```
+grails.config.locations = [
+        "file:/etc/app/myconfig*.groovy",
+        "~/.grails/myconfig*.groovy",
+]
+```
+__Note__: that it only works for the `file:` and `~/` prefix. 
+
+__Note__: the wildcards are in the order they are found in the `locations` list, but the order of the expanded `locations` for each wildcard is not guaranteed, and is dependent on the OS used.
+
 **Getting configuration from another folder than /conf on classpath without moving it with Gradle script**
 
 If you wish to make your Grails application pull external configuration from classpath when running locally, but you do not wish to get it packed into the assembled war file (i.e. place the external configuration file in e.g. /external-config instead of /conf), then you can include the external configuration file to the classpath by adding the following line to build.gradle:dependencies
