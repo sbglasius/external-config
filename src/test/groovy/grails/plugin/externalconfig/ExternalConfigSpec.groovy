@@ -5,6 +5,7 @@ import org.grails.config.NavigableMap
 import org.grails.config.NavigableMapPropertySource
 import org.grails.testing.GrailsUnitTest
 import org.springframework.core.env.ConfigurableEnvironment
+import spock.lang.Issue
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -167,7 +168,6 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
         cleanup:
         file.delete()
-
     }
 
     @Unroll("when getting #configExtension config with file in classpath")
@@ -219,6 +219,63 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         then:
         getConfigProperty('yml.config') == 'expected-value-test'
     }
+
+    @Issue('https://github.com/sbglasius/external-config/issues/24')
+    def "when getting config with wildcard files from tmp"() {
+        given: "Three files in tmp, where two matches the pattern"
+        def tmp = new File(System.getProperty('java.io.tmpdir'))
+        def file1 = new File(tmp, "file-a_name-config.groovy")
+        def file2 = new File(tmp, "file-b_name-config.groovy")
+        def file3 = new File(tmp, "not-a-match-file-c_name-config.groovy")
+        file1.text = "config.value1 = 'from-a'"
+        file2.text = "config.value2 = 'from-b'"
+        file3.text = "config.value3 = 'from-c'"
+
+        and: "Matching files in tmp"
+        addToEnvironment('grails.config.locations': ["file:${tmp}/file-*-config.groovy"])
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then: "Two values are set from two config files"
+        getConfigProperty('config.value1') == 'from-a'
+        getConfigProperty('config.value2') == 'from-b'
+
+        and: "Value in file3 is never read"
+        !getConfigProperty('config.value3')
+
+        cleanup:
+        [file1, file2, file3]*.delete()
+    }
+
+    @Issue('https://github.com/sbglasius/external-config/issues/24')
+    def "when getting config with wildcard files from user home"() {
+        given: "Three files in home, where two matches the pattern"
+        def home = new File(System.getProperty('user.home'))
+        def file1 = new File(home, "file-a_name-config.groovy")
+        def file2 = new File(home, "file-b_name-config.groovy")
+        def file3 = new File(home, "not-a-match-file-c_name-config.groovy")
+        file1.text = "config.value1 = 'from-a'"
+        file2.text = "config.value2 = 'from-b'"
+        file3.text = "config.value3 = 'from-c'"
+
+        and: "a pattern from user home"
+        addToEnvironment('grails.config.locations': ["~/file-*-config.groovy"])
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then: "Two values are set from two config files"
+        getConfigProperty('config.value1') == 'from-a'
+        getConfigProperty('config.value2') == 'from-b'
+
+        and: "Value in file3 is never read"
+        !getConfigProperty('config.value3')
+
+        cleanup:
+        [file1, file2, file3]*.delete()
+    }
+
 
     private void addToEnvironment(Map properties = [:]) {
         NavigableMap navigableMap = new NavigableMap()
