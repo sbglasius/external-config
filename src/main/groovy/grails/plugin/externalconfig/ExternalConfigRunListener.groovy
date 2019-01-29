@@ -88,7 +88,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     // Expands wildcards if any
     List<Object> handleWildcardLocation(String location) {
         if(location.startsWith('file:')) {
-            String locationFileName = location.split(separator)[-1]
+            String locationFileName = location.tokenize(separator)[-1]
             if(locationFileName.contains('*')) {
                 String parentLocation = location - locationFileName
                 try {
