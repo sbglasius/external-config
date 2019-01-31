@@ -4,6 +4,9 @@ External-Config
 
 This plugin will mimic the Grails 2 way of handling external configurations defined in `grails.config.locations`.
 
+VERSIONS!
+---------
+The `grails-3.x` branch is for Grails 3.x, `master` will, moving forward be for Grails 4.x
 
 IMPORTANT!
 ----------
