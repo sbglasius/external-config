@@ -138,7 +138,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         WriteFilteringMap filterMap = new WriteFilteringMap(currentConfig)
         slurper.binding = filterMap
         ConfigObject configObject = slurper.parse(configText)
-        Map properties = configText ? configObject?.flatten() : [:]
+        Map<String, Object> properties = configText ? configObject?.flatten() as Map<String, Object> : [:]
         Map writtenValues = filterMap.getWrittenValues()
         properties.putAll(writtenValues)
         new MapPropertySource(resource.filename, properties)
@@ -165,6 +165,13 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     void contextPrepared(ConfigurableApplicationContext context) {}
 
     void contextLoaded(ConfigurableApplicationContext context) {}
+
+    // Spring Boot 2.1+
+    void started(ConfigurableApplicationContext context) {}
+
+    void running(ConfigurableApplicationContext context) {}
+
+    void failed(ConfigurableApplicationContext context, Throwable exception) {}
 
     void finished(ConfigurableApplicationContext context, Throwable exception) {}
 

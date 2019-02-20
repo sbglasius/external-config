@@ -1,7 +1,4 @@
 buildscript {
-    ext {
-        grailsVersion = project.grailsVersion
-    }
     repositories {
         mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
@@ -24,13 +21,8 @@ apply plugin: "org.grails.grails-plugin-publish"
 
 // sourceCompatibility has to be placed after applying the Java Plugin:
 // See https://stackoverflow.com/questions/21028438/gradle-sourcecompatibility-has-no-effect-to-subprojects
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
-
-ext {
-    grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
-}
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 repositories {
     mavenLocal()
@@ -50,10 +42,11 @@ dependencies {
     testCompile "org.grails:grails-web-testing-support"
     testCompile "org.grails:grails-plugin-testing"
 
-    runtime 'com.virtualdogbert:GroovyConfigWriter:0.2'
-    runtime 'org.yaml:snakeyaml:1.18'
-
+    runtime 'com.virtualdogbert:GroovyConfigWriter:1.0'
+    runtime 'org.yaml:snakeyaml:1.23'
 }
+
+bootJar.enabled = false
 
 grailsPublish {
     user = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser')
