@@ -1,0 +1,5 @@
+yml:
+  config: yml-expected-value
+---
+yml:
+  second: yml-second-value

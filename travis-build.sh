@@ -5,7 +5,7 @@ echo "TRAVIS_BRANCH       : $TRAVIS_BRANCH"
 echo "TRAVIS_PULL_REQUEST : $TRAVIS_PULL_REQUEST"
 echo "Publishing archives for branch $TRAVIS_BRANCH"
 
-./gradlew clean check install --stacktrace
+./gradlew clean external-config:test test-app:test external-config:install --stacktrace
 
 EXIT_STATUS=0
 # Only publish if the branch is on master, and it is not a PR
@@ -13,10 +13,10 @@ if [[ -n "${TRAVIS_TAG}" ]] || [[ "${TRAVIS_BRANCH}" == 'master' && "${TRAVIS_PU
   echo "Publishing archives for branch $TRAVIS_BRANCH"
   if [[ -n ${TRAVIS_TAG} ]]; then
     echo "Pushing build to Bintray"
-    ./gradlew bintrayUpload -PpluginVersion=${TRAVIS_TAG}  || EXIT_STATUS=$?
+    ./gradlew external-config:bintrayUpload -PpluginVersion=${TRAVIS_TAG}  || EXIT_STATUS=$?
   else
     echo "Publishing snapshot to OJO"
-    ./gradlew artifactoryPublish || EXIT_STATUS=$?
+    ./gradlew external-config:artifactoryPublish || EXIT_STATUS=$?
   fi
 fi
 exit ${EXIT_STATUS}
