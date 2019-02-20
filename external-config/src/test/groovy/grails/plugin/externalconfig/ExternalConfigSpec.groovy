@@ -276,6 +276,18 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         [file1, file2, file3]*.delete()
     }
 
+    def "getting configuration from yml with multiple documents"() {
+        given:
+        addToEnvironment('environments.test.grails.config.locations':["classpath:/externalConfigMultipleDocs.yml"])
+
+        when:
+        listener.environmentPrepared(environment)
+
+        then:
+        getConfigProperty("yml.config") == 'yml-expected-value'
+        getConfigProperty("yml.second") == 'yml-second-value'
+    }
+
 
     private void addToEnvironment(Map properties = [:]) {
         NavigableMap navigableMap = new NavigableMap()
