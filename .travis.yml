@@ -5,14 +5,12 @@ cache:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 jdk:
-- openjdk7
+- openjdk8
 before_install:
-# Workaround for https://github.com/gradle/gradle/issues/2421:
-# download all Gradle distributions with openjdk8
-- JAVA_HOME=$(jdk_switcher home openjdk8) ./gradlew assemble
+- ./gradlew assemble
 install: "/bin/true"
 script:
-- JAVA_HOME=$(jdk_switcher home openjdk7) "./travis-build.sh"
+- "./travis-build.sh"
 env:
   global:
   - GIT_NAME="Søren Berg Glasius"
