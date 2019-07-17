@@ -42,7 +42,7 @@ dependencies {
     testCompile "org.grails:grails-web-testing-support"
     testCompile "org.grails:grails-plugin-testing"
 
-    runtime 'com.virtualdogbert:GroovyConfigWriter:1.0'
+    runtime 'com.virtualdogbert:GroovyConfigWriter:1.1'
     runtime 'org.yaml:snakeyaml:1.23'
 }
 
