@@ -33,7 +33,7 @@ Add dependency to your `build.gradle`:
 
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.2.2'
+    compile 'org.grails.plugins:external-config:1.4.0'
 }
 ```
 
@@ -49,7 +49,7 @@ repositories {
 and specify the snapshot version as a dependency:
 ```
 dependencies {
-    compile 'org.grails.plugins:external-config:1.3.0.BUILD-SNAPSHOT'
+    compile 'org.grails.plugins:external-config:1.4.1.BUILD-SNAPSHOT'
 }
 ```
 
