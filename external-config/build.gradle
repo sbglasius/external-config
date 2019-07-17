@@ -31,16 +31,15 @@ repositories {
 
 dependencies {
 
-    provided "org.springframework.boot:spring-boot-starter-logging"
-    provided "org.springframework.boot:spring-boot-autoconfigure"
-    provided "org.grails:grails-core"
-    provided "org.grails:grails-dependencies"
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.grails:grails-core"
+    implementation "org.grails:grails-dependencies"
 
     console "org.grails:grails-console"
     profile "org.grails.profiles:plugin"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
     testCompile "org.grails:grails-web-testing-support"
-    testCompile "org.grails:grails-plugin-testing"
 
     runtime 'com.virtualdogbert:GroovyConfigWriter:1.1'
     runtime 'org.yaml:snakeyaml:1.23'
