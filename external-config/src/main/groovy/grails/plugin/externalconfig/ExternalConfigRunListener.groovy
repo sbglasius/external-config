@@ -146,7 +146,8 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 
     private NavigableMapPropertySource loadYamlConfig(Resource resource) {
         log.info("Loading YAML config file {}", resource.URI)
-        NavigableMapPropertySource propertySource = yamlPropertySourceLoader.load(resource.filename, resource, null)?.first() as NavigableMapPropertySource
+        def yamlProperties = yamlPropertySourceLoader.load(resource.filename, resource, null)
+        NavigableMapPropertySource propertySource = ( yamlProperties ? yamlProperties?.first() : null ) as NavigableMapPropertySource
         return propertySource
     }
 
