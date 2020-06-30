@@ -29,7 +29,7 @@ Installation
 
 Add dependency to your `build.gradle`:
 
-```
+```groovy
 dependencies {
     compile 'org.grails.plugins:external-config:2.0.0' // or latest version
 }
@@ -38,14 +38,16 @@ dependencies {
 To use a snapshot-version
 
 add JFrog OSS Repository to the `repositories`:
-```
+
+```groovy
 repositories {
     maven { url "https://oss.jfrog.org/repo/" }
 }
 ```
 
 and specify the snapshot version as a dependency:
-```
+
+```groovy
 dependencies {
     compile 'org.grails.plugins:external-config:2.0.1.BUILD-SNAPSHOT'
 }
@@ -56,7 +58,7 @@ Usage
 
 When you add this plugin to your Grails build, it will automatically look for the property `grails.config.locations`. Define this in in either `application.yml` like this:
 
-```
+```yml
 grails:
     config:
         locations:
@@ -76,7 +78,7 @@ grails:
 
 or in `application.groovy` like this:
 
-```
+```groovy
 grails.config.locations = [
         "classpath:myconfig.groovy",
         "classpath:myconfig.yml",
@@ -94,7 +96,8 @@ grails.config.locations = [
 ```
 
 It is also possible to define it in an environment specific block (groovy):
-```$xslt
+
+```groovy
 environments {
     test {
         grails {
@@ -108,7 +111,7 @@ environments {
 
 or (yml)
 
-```
+```yml
 environments:
     test:
         grails:
@@ -128,7 +131,7 @@ For `.groovy` and `.yml` files the `environments` blocks in the config file are 
 
 It is possible to use `*` as wildcards in the filename part of the configuration:
 
-```
+```yaml
 grails:
     config:
         locations:
@@ -136,7 +139,7 @@ grails:
             - ~/.grails/myconfig*.groovy
 ```
 or
-```
+```groovy
 grails.config.locations = [
         "file:/etc/app/myconfig*.groovy",
         "~/.grails/myconfig*.groovy",
@@ -149,7 +152,7 @@ __Note__: the wildcards are in the order they are found in the `locations` list,
 **Getting configuration from another folder than /conf on classpath without moving it with Gradle script**
 
 If you wish to make your Grails application pull external configuration from classpath when running locally, but you do not wish to get it packed into the assembled war file (i.e. place the external configuration file in e.g. /external-config instead of /conf), then you can include the external configuration file to the classpath by adding the following line to build.gradle:dependencies
-```
+```groovy
 provided files('external-config') // provided to ensure that external config is not included in the war file
 ```
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
