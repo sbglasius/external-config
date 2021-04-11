@@ -1,6 +1,6 @@
 # External-Config
 
-[![Build Status](https://travis-ci.org/sbglasius/external-config.svg?branch=master)](https://travis-ci.org/sbglasius/external-config)
+[![Tests](https://github.com/sbglasius/external-config/actions/workflows/gradle-check.yml/badge.svg)](https://github.com/sbglasius/external-config/actions/workflows/gradle-check.yml)
 
 This plugin will mimic the Grails 2 way of handling external configurations defined in `grails.config.locations`. 
 
@@ -10,7 +10,7 @@ It also provides scripts to convert between yml & groovy config.
 
 | Grails | external-config |
 |--|--|
-| 4.x.x | 2.0.0 |
+| 4.x.x | 2.0.1 |
 | 3.3.x | 1.4.0 |
 
 ## Contributors
@@ -27,37 +27,19 @@ Thank you!
 
 ## Installation
 
+**Note:** New coordinates! Not published with `grails.org.plugins` coordinates since BinTray went out of business. Now published under `dk.glasius` 
+
 Add dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'org.grails.plugins:external-config:2.0.0' // or latest version
-}
-```
-
-### Snapshot
-
-To use a snapshot-version
-
-add JFrog OSS Repository to the `repositories`:
-
-```groovy
-repositories {
-    maven { url "https://oss.jfrog.org/repo/" }
-}
-```
-
-and specify the snapshot version as a dependency:
-
-```groovy
-dependencies {
-    compile 'org.grails.plugins:external-config:2.0.1.BUILD-SNAPSHOT'
+    compile 'dk.glasius:external-config:2.0.1' // or latest version
 }
 ```
 
 ## Usage
 
-When you add this plugin to your Grails build, it will automatically look for the property `grails.config.locations`. Define this in in either `application.yml` like this:
+When you add this plugin to your Grails build, it will automatically look for the property `grails.config.locations`. Define this in either `application.yml` like this:
 
 ```yml
 grails:
