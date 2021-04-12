@@ -51,6 +51,8 @@ ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 afterEvaluate {
     signing {
         required { isReleaseVersion }
+        println "---> ${System.getenv('SIGNING_PRIVATE_KEY')}"
+        println "---> ${System.getenv('SIGNING_PASSWORD')}"
         sign publishing.publications.maven
     }
 }
