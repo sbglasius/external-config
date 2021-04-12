@@ -51,8 +51,9 @@ ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 afterEvaluate {
     signing {
         required { isReleaseVersion }
-        println "---> ${System.getenv('SIGNING_PRIVATE_KEY')}"
-        println "---> ${System.getenv('SIGNING_PASSWORD')}"
+        if(System.getenv('SIGNING_PRIVATE_KEY') && System.getenv('SIGNING_PASSWORD')) {
+            useInMemoryPgpKeys(System.getenv('SIGNING_PRIVATE_KEY'), System.getenv('SIGNING_PASSWORD') )
+        }
         sign publishing.publications.maven
     }
 }
