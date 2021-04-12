@@ -7,8 +7,6 @@ apply plugin: "org.grails.grails-plugin"
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-// sourceCompatibility has to be placed after applying the Java Plugin:
-// See https://stackoverflow.com/questions/21028438/gradle-sourcecompatibility-has-no-effect-to-subprojects
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
@@ -76,15 +74,32 @@ publishing {
     }
 }
 
-ext."signing.keyId" = project.hasProperty("signing.keyId") ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY_ID')
-ext."signing.password" = project.hasProperty("signing.password") ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSPHRASE')
-ext."signing.secretKeyRingFile" = project.hasProperty("signing.secretKeyRingFile") ? project.getProperty('signing.secretKeyRingFile') : (System.getenv('SIGNING_PASSPHRASE') ?: "${System.properties['user.home']}/.gnupg/secring.gpg")
+ext.signingKey = System.getenv('SIGNING_KEY')
+ext.signingPassword = System.getenv('SIGNING_PASSWORD')
+if(!project.findProperty('signingKey')) {
+    ext."signing.keyId" = project.hasProperty('signing.keyId') ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY_ID')
+    ext."signing.password" = project.hasProperty('signing.password') ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSPHRASE')
+    ext."signing.secretKeyRingFile" = project.hasProperty('signing.secretKeyRingFile') ? project.getProperty('signing.secretKeyRingFile') : (System.getenv('SIGNING_PASSPHRASE') ?: "${System.properties['user.home']}/.gnupg/secring.gpg")
+}
 
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
 afterEvaluate {
     signing {
-        required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+        required { isReleaseVersion && gradle.taskGraph.hasTask(publishToSonatype) }
+        if(project.findProperty('signingKey')) {
+            //If required, read a sub-key specified by its ID in property signingKeyId
+            //def signingKeyId = findProperty("signingKeyId")
+            //read property 'signingKey'
+            def signingKey = findProperty("signingKey")
+            //read property 'signingPassword'
+            def signingPassword = findProperty("signingPassword")
+            //Select to use in-memory ascii-armored keys
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            //Only if also using signingKeyId
+            //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        }
+
         sign publishing.publications.maven
     }
 }
