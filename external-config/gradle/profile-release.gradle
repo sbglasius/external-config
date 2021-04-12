@@ -1,0 +1,56 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'external-config'
+            version = project.version
+
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'External Config'
+                description = 'Mimic the Grails 2 way of handling external configurations'
+                url = 'https://github.com/sbglasius/external-config'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'sbglasius'
+                        name = 'Søren Berg Glasius'
+                        email = 'soeren@glasius.dk'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/sbglasius/external-config.git'
+                    developerConnection = 'scm:git:ssh:github.com:sbglasius/external-config.git'
+                    url = 'https://github.com/sbglasius/external-config/'
+                }
+            }
+        }
+    }
+}
+
+ext."signing.keyId" = project.hasProperty('signing.keyId') ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY_ID')
+ext."signing.password" = project.hasProperty('signing.password') ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSPHRASE')
+ext."signing.secretKeyRingFile" = project.hasProperty('signing.secretKeyRingFile') ? project.getProperty('signing.secretKeyRingFile') : (System.getenv('SIGNING_PASSPHRASE') ?: "${System.properties['user.home']}/.gnupg/secring.gpg")
+
+ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion && gradle.taskGraph.hasTask(publishToSonatype) }
+        sign publishing.publications.maven
+    }
+}
+
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
+}

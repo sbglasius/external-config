@@ -37,11 +37,13 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+          SECRING_FILE: ${{ secrets.SECRING_FILE }}
         run: |
+          echo "$SECRING_FILE" | base64 -d > ${GITHUB_WORKSPACE}/secring.gpg
           echo "Publishing Artifacts"
           set -x
-          ./gradlew --debug --console plain :external-config:publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon
+          ./gradlew -Prelease=true -Psigning.secretKeyRingFile="${GITHUB_WORKSPACE}/secring.gpg" :external-config:publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon
           set +x
           echo "Publishing Documentation"
       - name: Export Gradle Properties
