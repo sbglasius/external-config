@@ -31,9 +31,6 @@ dependencies {
 
 bootJar.enabled = false
 
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
 
 if (project.hasProperty('release')) {
     println 'Using release profile for building ' + project.getName()

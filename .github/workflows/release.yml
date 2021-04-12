@@ -43,7 +43,7 @@ jobs:
           echo "$SECRING_FILE" | base64 -d > ${GITHUB_WORKSPACE}/secring.gpg
           echo "Publishing Artifacts"
           set -x
-          ./gradlew -Prelease=true -Psigning.secretKeyRingFile="${GITHUB_WORKSPACE}/secring.gpg" :external-config:publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon
+          ./gradlew --info -Prelease=true -Psigning.secretKeyRingFile="${GITHUB_WORKSPACE}/secring.gpg" :external-config:publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon
           set +x
           echo "Publishing Documentation"
       - name: Export Gradle Properties

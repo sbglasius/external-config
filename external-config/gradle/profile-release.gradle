@@ -1,6 +1,10 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
@@ -46,11 +50,7 @@ ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
 afterEvaluate {
     signing {
-        required { isReleaseVersion && gradle.taskGraph.hasTask(publishToSonatype) }
+        required { isReleaseVersion }
         sign publishing.publications.maven
     }
-}
-
-tasks.withType(Sign) {
-    onlyIf { isReleaseVersion }
 }
