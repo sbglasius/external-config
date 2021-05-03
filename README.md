@@ -27,13 +27,13 @@ Thank you!
 
 ## Installation
 
-**Note:** New coordinates! Not published with `grails.org.plugins` coordinates since BinTray went out of business. Now published under `dk.glasius` 
+**Note:** New coordinates! Not published with `grails.org.plugins` coordinates since BinTray went out of business. Now published under `dk.glasius.external-config` 
 
 Add dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'dk.glasius:external-config:2.0.1' // or latest version
+    compile 'dk.glasius.external-config:external-config:2.0.1' // or latest version
 }
 ```
 
@@ -140,6 +140,10 @@ If you wish to make your Grails application pull external configuration from cla
 provided files('external-config') // provided to ensure that external config is not included in the war file
 ```
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
+
+## Micronaut support
+
+The plugin will register the locations in `grails.config.locations` as `micronaut.config.files`. Please note, that Micronaut will fail, if it does not recognise the file extension.
 
 ## Scripts
 
