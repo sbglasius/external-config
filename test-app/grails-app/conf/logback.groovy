@@ -34,4 +34,5 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
 }
 root(WARN, ['STDOUT'])
-logger('grails.plugin.externalconfig', INFO, ['STDOUT'], false)
+logger('grails.plugin.externalconfig', DEBUG)
+logger('io.micronaut.context', DEBUG)

@@ -2,6 +2,7 @@ package grails.plugin.externalconfig
 
 import grails.util.Environment
 import groovy.transform.CompileStatic
+import io.micronaut.context.env.DefaultEnvironment
 import org.grails.config.NavigableMapPropertySource
 import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
@@ -29,7 +30,11 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     private String userHome = System.properties.getProperty('user.home')
     private String separator = System.properties.getProperty('file.separator')
 
-    ExternalConfigRunListener(SpringApplication application, String[] args) {}
+    final SpringApplication application
+
+    ExternalConfigRunListener(SpringApplication application, String[] args) {
+        this.application = application
+    }
 
     @Override
     void environmentPrepared(ConfigurableEnvironment environment) {
@@ -65,6 +70,8 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
                 environment.propertySources.addFirst(propertySource)
             }
         }
+        setMicronautConfigLocations(locations)
+
     }
 
     // Resolve final locations, taking into account user home prefix and file wildcards
@@ -74,10 +81,10 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         String environmentString = "environments.${Environment.current.name}.grails.config.locations"
         locations = environment.getProperty(environmentString, List, locations)
         locations.collectMany { Object location ->
-            if(location instanceof CharSequence) {
+            if (location instanceof CharSequence) {
                 location = replaceUserHomePrefix(location as String)
                 List<Object> expandedLocations = handleWildcardLocation(location as String)
-                if(expandedLocations) {
+                if (expandedLocations) {
                     return expandedLocations
                 }
             }
@@ -86,14 +93,14 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     }
 
     // Expands wildcards if any
-    List<Object> handleWildcardLocation(String location) {
-        if(location.startsWith('file:')) {
+    private List<Object> handleWildcardLocation(String location) {
+        if (location.startsWith('file:')) {
             String locationFileName = location.tokenize(separator)[-1]
-            if(locationFileName.contains('*')) {
+            if (locationFileName.contains('*')) {
                 String parentLocation = location - locationFileName
                 try {
                     Resource resource = defaultResourceLoader.getResource(parentLocation)
-                    if(resource.file.exists() && resource.file.isDirectory()) {
+                    if (resource.file.exists() && resource.file.isDirectory()) {
                         Path dir = resource.file.toPath()
                         DirectoryStream<Path> stream = Files.newDirectoryStream(dir, locationFileName)
 
@@ -147,7 +154,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     private NavigableMapPropertySource loadYamlConfig(Resource resource) {
         log.info("Loading YAML config file {}", resource.URI)
         def yamlProperties = yamlPropertySourceLoader.load(resource.filename, resource, null)
-        NavigableMapPropertySource propertySource = ( yamlProperties ? yamlProperties?.first() : null ) as NavigableMapPropertySource
+        NavigableMapPropertySource propertySource = (yamlProperties ? yamlProperties?.first() : null) as NavigableMapPropertySource
         return propertySource
     }
 
@@ -156,6 +163,12 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         Properties properties = new Properties()
         properties.load(resource.inputStream)
         new MapPropertySource(resource.filename, properties as Map)
+    }
+
+    private void setMicronautConfigLocations(List<Object> newSources) {
+        List<String> sources = System.getProperty('micronaut.config.files', '').tokenize(',')
+        sources.addAll(newSources.collect { it.toString() } )
+        System.setProperty('micronaut.config.files', sources.join(',') )
     }
 
     // Spring Boot 1.4 or higher
@@ -179,4 +192,5 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     static Map getCurrentConfig(ConfigurableEnvironment environment) {
         return new PropertySourcesConfig(environment.propertySources)
     }
+
 }
