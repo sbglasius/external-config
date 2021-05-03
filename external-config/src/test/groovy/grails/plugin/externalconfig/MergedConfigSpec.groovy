@@ -13,6 +13,12 @@ class MergedConfigSpec extends Specification implements GrailsUnitTest {
     ConfigurableEnvironment environment = new GrailsEnvironment(grailsApplication)
     ExternalConfigRunListener listener = new ExternalConfigRunListener(null, null)
 
+    def cleanupSpec() {
+        cleanupGrailsApplication()
+        System.clearProperty('micronaut.config.files')
+    }
+
+
     def "when merging multiple configs the expected values are in the final result"() {
         given:
             addToEnvironment('grails.config.locations': [

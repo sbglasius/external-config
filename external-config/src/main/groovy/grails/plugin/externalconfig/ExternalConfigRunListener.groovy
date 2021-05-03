@@ -2,12 +2,10 @@ package grails.plugin.externalconfig
 
 import grails.util.Environment
 import groovy.transform.CompileStatic
-import io.micronaut.context.env.DefaultEnvironment
+import groovy.util.logging.Slf4j
 import org.grails.config.NavigableMapPropertySource
 import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringApplicationRunListener
 import org.springframework.context.ConfigurableApplicationContext
@@ -22,11 +20,11 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 @CompileStatic
+@Slf4j(category = 'grails.plugin.externalconfig.ExternalConfig')
 class ExternalConfigRunListener implements SpringApplicationRunListener {
 
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
-    private Logger log = LoggerFactory.getLogger('grails.plugin.externalconfig.ExternalConfig')
     private String userHome = System.properties.getProperty('user.home')
     private String separator = System.properties.getProperty('file.separator')
 
@@ -165,9 +163,10 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         new MapPropertySource(resource.filename, properties as Map)
     }
 
-    private void setMicronautConfigLocations(List<Object> newSources) {
+    private static void setMicronautConfigLocations(List<Object> newSources) {
         List<String> sources = System.getProperty('micronaut.config.files', '').tokenize(',')
-        sources.addAll(newSources.collect { it.toString() } )
+        sources.addAll(newSources.collect { it.toString() })
+        log.debug("---> Setting 'micronaut.config.files' to ${sources.join(',')}")
         System.setProperty('micronaut.config.files', sources.join(',') )
     }
 

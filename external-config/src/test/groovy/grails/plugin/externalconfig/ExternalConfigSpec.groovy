@@ -14,6 +14,11 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
     ConfigurableEnvironment environment = new GrailsEnvironment(grailsApplication)
     ExternalConfigRunListener listener = new ExternalConfigRunListener(null, null)
 
+    def cleanupSpec() {
+        cleanupGrailsApplication()
+        System.clearProperty('micronaut.config.files')
+    }
+
     def "when getting config without grails.config.location set, the config does not change"() {
         when:
         listener.environmentPrepared(environment)
@@ -35,7 +40,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
     def "getting configuration from environment specific location"() {
         given:
-        addToEnvironment('environments.test.grails.config.locations':["classpath:/externalConfig.yml"])
+        addToEnvironment('environments.test.grails.config.locations':["classpath:externalConfig.yml"])
 
         when:
         listener.environmentPrepared(environment)
@@ -128,14 +133,14 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         dir.mkdirs()
 
         and: "a new external configuration file"
-        def file = new File(dir, 'external-config-temp-config.groovy')
+        def file = new File(dir, 'external-config-temp-config2.groovy')
         file.text = """\
             config.value = 'expected-value'
             nested { config { value = 'nested-value' } }
             """.stripIndent()
 
         and:
-        addToEnvironment('grails.config.locations': ['file:${user.home}/.grails/external-config-temp-config.groovy'])
+        addToEnvironment('grails.config.locations': ['file:${user.home}/.grails/external-config-temp-config2.groovy'])
 
         when:
         listener.environmentPrepared(environment)
@@ -200,7 +205,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
         then:
         getConfigProperty("external.config") == expectedValue
-        getConfigProperty("external.javaHome") == 'test-'+System.getenv('JAVA_HOME')
+        getConfigProperty("external.javaHome") == 'test-home-value'
 
         where:
         configExtension | expectedValue

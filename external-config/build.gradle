@@ -34,11 +34,16 @@ dependencies {
 
 bootJar.enabled = false
 
+tasks.withType(Test) {
+    systemProperty 'TEST_HOME', 'home-value'
+    systemProperty 'user.home', System.getProperty('user.home')
+}
 
 if (project.hasProperty('release')) {
     println 'Using release profile for building ' + project.getName()
     apply from: 'gradle/profile-release.gradle'
 }
+
 
 
 

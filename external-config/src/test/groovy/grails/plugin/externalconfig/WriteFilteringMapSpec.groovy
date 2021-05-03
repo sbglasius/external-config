@@ -52,7 +52,4 @@ class WriteFilteringMapSpec extends Specification {
             filter.getWrittenValues().get('a.c.e') == 'new-e-value'
             filter.getWrittenValues().get('a.c.f.g.h') == 'new-h-value'
     }
-
-
-
 }
