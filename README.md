@@ -27,13 +27,13 @@ Thank you!
 
 ## Installation
 
-**Note:** New coordinates! Not published with `grails.org.plugins` coordinates since BinTray went out of business. Now published under `dk.glasius.external-config` 
+**Note:** New coordinates! Not published with `grails.org.plugins` coordinates since BinTray went out of business. Now published under `dk.glasius` 
 
 Add dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'dk.glasius.external-config:external-config:2.0.1' // or latest version
+    compile 'dk.glasius:external-config:2.0.1' // or latest version
 }
 ```
 
