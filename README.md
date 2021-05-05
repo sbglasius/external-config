@@ -2,8 +2,7 @@ Application-Config
 ===============
 [![Build Status](https://travis-ci.org/neilabdev/application-config.svg?branch=master)](https://travis-ci.org/neilabdev/application-config)
 
-This plugin based on the amazing work started in plugin  [external-config](http://plugins.grails.org/plugin/grails/external-config) by [Sudhir Nimavat](https://github.com/snimavat) and  [Dennie de Lange](https://github.com/tkvw),
- which mimiced the Grails 2 way of handling external configurations defined in `grails.config.locations`; with the necessary additions to allow configurations via command line, system properties, and JNDI.
+This plugin based on the amazing work started in plugin  [external-config](http://plugins.grails.org/plugin/grails/external-config) by [Søren Berg Glasius](https://github.com/sbglasius), which mimiced the Grails 2 way of handling external configurations defined in `grails.config.locations`; with the necessary additions to allow configurations via command line, system properties, and JNDI.
 
 Contributors
 ------------
