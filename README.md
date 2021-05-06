@@ -13,7 +13,10 @@ It also provides scripts to convert between yml & groovy config.
 | 4.x.x | 2.0.1 |
 | 3.3.x | 1.4.0 |
 
-## Contributors
+## Creator and contributors
+
+Plugin creator
+* [Søren berg Glasius](https://github.com/sbglasius)
 
 Major contributors
 
