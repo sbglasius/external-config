@@ -68,8 +68,8 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
                 environment.propertySources.addFirst(propertySource)
             }
         }
-        setMicronautConfigLocations(locations)
 
+        setMicronautConfigLocations(locations)
     }
 
     // Resolve final locations, taking into account user home prefix and file wildcards
@@ -163,11 +163,30 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         new MapPropertySource(resource.filename, properties as Map)
     }
 
-    private static void setMicronautConfigLocations(List<Object> newSources) {
+    private void setMicronautConfigLocations(List<Object> newSources) {
         List<String> sources = System.getProperty('micronaut.config.files', '').tokenize(',')
         sources.addAll(newSources.collect { it.toString() })
+        sources = filterMissingMicronautLocations(sources)
         log.debug("---> Setting 'micronaut.config.files' to ${sources.join(',')}")
         System.setProperty('micronaut.config.files', sources.join(',') )
+    }
+
+    private List<String> filterMissingMicronautLocations(List<String> sources) {
+        sources.findAll { String location ->
+            if (location.startsWith('file:')) {
+                try {
+                    def resource = defaultResourceLoader.getResource(location)
+                    if (!resource.file.exists()) {
+                        log.debug("Configuration file ${location} not found, ignoring.")
+                        return false
+                    }
+                } catch (FileNotFoundException ignore) {
+                    log.debug("Configuration file ${location} not found, ignoring.")
+                    return false
+                }
+            }
+            true
+        }
     }
 
     // Spring Boot 1.4 or higher
