@@ -119,7 +119,7 @@ environments:
 ---
 test:
     config:
-        value: "application.yml"
+        value: "From application.yml"
 ---
 grails:
     config:

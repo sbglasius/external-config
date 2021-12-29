@@ -1,25 +1,23 @@
 package test.app
 
 import grails.testing.mixin.integration.Integration
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Specification
 import spock.util.environment.RestoreSystemProperties
 
 @Integration
 @RestoreSystemProperties
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class TestServicePropertiesSpec extends Specification {
 
-    @Autowired
     TestService testService
-
+ 
     void setupSpec() {
-        System.setProperty('grails.config.locations', 'classpath:resourceConfig.properties')
+        System.setProperty('grails.config.locations', 'classpath:testResourceConfig.properties')
     }
 
     void "Loads from resourceConfig.properties"() {
         expect:
-        testService.configValue == "resourceConfig.properties"
+        testService.configValue == "From Test Resource Config (.properties)"
     }
 }

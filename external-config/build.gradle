@@ -1,49 +1,88 @@
-version "$pluginVersion"
 group "dk.glasius"
 
-apply plugin: "idea"
-apply plugin: "org.grails.grails-plugin"
 apply plugin: 'maven-publish'
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-repositories {
-    mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
-}
-
 dependencies {
+    implementation(platform("org.grails:grails-bom:$grailsVersion"))
 
-    implementation "org.springframework.boot:spring-boot-starter-logging"
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation "org.grails:grails-core"
     implementation "org.grails:grails-dependencies"
+    implementation 'org.codehaus.groovy:groovy-yaml:3.0.8'
 
-    console "org.grails:grails-console"
-    profile "org.grails.profiles:plugin"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "io.micronaut:micronaut-core"
     implementation "io.micronaut:micronaut-inject"
-    implementation "io.micronaut:micronaut-messaging:1.3.7"
-    testCompile "org.grails:grails-web-testing-support"
+    testImplementation "org.grails:grails-testing-support"
 
-    runtime 'com.virtualdogbert:GroovyConfigWriter:1.1'
-    runtime 'org.yaml:snakeyaml:1.23'
+    runtimeOnly 'com.virtualdogbert:GroovyConfigWriter:1.1'
+    runtimeOnly 'org.yaml:snakeyaml:1.23'
 }
-
-bootJar.enabled = false
 
 tasks.withType(Test) {
     systemProperty 'TEST_HOME', 'home-value'
     systemProperty 'user.home', System.getProperty('user.home')
+    systemProperty 'grails.env', 'TEST'
 }
 
-if (project.hasProperty('release')) {
-    println 'Using release profile for building ' + project.getName()
-    apply from: 'gradle/profile-release.gradle'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+java {
+    withSourcesJar()
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'external-config'
+            version = project.version
 
+            from components.java
+//            afterEvaluate {
+//                artifact source: project.sourcesJar, classifier: "sources"
+//            }
+            pom {
+                name = 'External Config'
+                description = 'Mimic the Grails 2 way of handling external configurations'
+                url = 'https://github.com/sbglasius/external-config'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'sbglasius'
+                        name = 'Søren Berg Glasius'
+                        email = 'soeren@glasius.dk'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/sbglasius/external-config.git'
+                    developerConnection = 'scm:git:ssh:github.com:sbglasius/external-config.git'
+                    url = 'https://github.com/sbglasius/external-config/'
+                }
+            }
+        }
+    }
+}
 
+ext."signing.keyId" = project.hasProperty('signing.keyId') ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY')
+ext."signing.password" = project.hasProperty('signing.password') ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSPHRASE')
+ext."signing.secretKeyRingFile" = project.hasProperty('signing.secretKeyRingFile') ? project.getProperty('signing.secretKeyRingFile') : (System.getenv('SIGNING_PASSPHRASE') ?: "${System.properties['user.home']}/.gnupg/secring.gpg")
 
+ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion }
+        if (System.getenv('SIGNING_PRIVATE_KEY') && System.getenv('SIGNING_PASSWORD')) {
+            useInMemoryPgpKeys(System.getenv('SIGNING_PRIVATE_KEY'), System.getenv('SIGNING_PASSWORD'))
+        }
+        sign publishing.publications.maven
+    }
+}
