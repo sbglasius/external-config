@@ -41,9 +41,6 @@ publishing {
             version = project.version
 
             from components.java
-//            afterEvaluate {
-//                artifact source: project.sourcesJar, classifier: "sources"
-//            }
             pom {
                 name = 'External Config'
                 description = 'Mimic the Grails 2 way of handling external configurations'
