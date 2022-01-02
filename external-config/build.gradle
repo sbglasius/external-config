@@ -68,18 +68,15 @@ publishing {
     }
 }
 
-ext."signing.keyId" = project.hasProperty('signing.keyId') ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY')
-ext."signing.password" = project.hasProperty('signing.password') ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSPHRASE')
-ext."signing.secretKeyRingFile" = project.hasProperty('signing.secretKeyRingFile') ? project.getProperty('signing.secretKeyRingFile') : (System.getenv('SIGNING_PASSPHRASE') ?: "${System.properties['user.home']}/.gnupg/secring.gpg")
+ext."signing.keyId" = project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY')
+ext."signing.password" = project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE')
+ext."signing.secretKeyRingFile" = project.findProperty('signing.secretKeyRingFile') ?: (System.getenv('GITHUB_WORKSPACE') ? "${System.getenv('GITHUB_WORKSPACE')}/secring.gpg" : "${System.getProperty('user.home')}/.gnupg/secring.gpg")
 
 ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
 afterEvaluate {
     signing {
         required { isReleaseVersion }
-        if (System.getenv('SIGNING_PRIVATE_KEY') && System.getenv('SIGNING_PASSWORD')) {
-            useInMemoryPgpKeys(System.getenv('SIGNING_PRIVATE_KEY'), System.getenv('SIGNING_PASSWORD'))
-        }
         sign publishing.publications.maven
     }
 }
