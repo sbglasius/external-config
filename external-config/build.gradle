@@ -31,6 +31,7 @@ apply plugin: 'signing'
 
 java {
     withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
