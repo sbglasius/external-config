@@ -17,7 +17,7 @@ dependencies {
     testImplementation "org.grails:grails-testing-support"
 
     runtimeOnly 'com.virtualdogbert:GroovyConfigWriter:1.1'
-    runtimeOnly 'org.yaml:snakeyaml:1.23'
+    runtimeOnly 'org.yaml:snakeyaml:1.30'
 }
 
 tasks.withType(Test) {
