@@ -139,10 +139,28 @@ __Note__: the wildcards are in the order they are found in the `locations` list,
 
 ### Getting configuration from another folder than /conf on classpath without moving it with Gradle script
 
-If you wish to make your Grails application pull external configuration from classpath when running locally, but you do not wish to get it packed into the assembled war file (i.e. place the external configuration file in e.g. /external-config instead of /conf), then you can include the external configuration file to the classpath by adding the following line to build.gradle:dependencies
+If you wish to make your Grails application pull external configuration from classpath when running locally, but you do not wish to get it packed into the assembled war file (i.e. place the external configuration file in e.g. /external-config instead of /conf), then you can include the external configuration file to the classpath by adding the following line to `build.gradle`
+
+```
+tasks.named('bootRun') {
+    doFirst {
+        classpath += files("external-config")
+    }
+}
+
+tasks.withType(Test) {
+    doFirst {
+        classpath += files("external-config")
+    }
+}
+```
+
+or alternatively add this to your `dependencies`:
+
 ```groovy
 provided files('external-config') // provided to ensure that external config is not included in the war file
 ```
+
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
 
 ## Micronaut support
