@@ -177,7 +177,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         sources.findAll { String location ->
                 try {
                     def resource = defaultResourceLoader.getResource(location)
-                    if (!resource.file.exists()) {
+                    if (!resource.exists()) {
                         log.debug("Configuration file ${location} not found, ignoring.")
                         return false
                     }
