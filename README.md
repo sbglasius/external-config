@@ -10,6 +10,7 @@ It also provides scripts to convert between yml & groovy config.
 
 | Grails | external-config |
 |--|--|
+| 5.2.x | 3.1.0 |
 | 5.0.x | 3.0.0 |
 | 4.x.x | 2.0.1 |
 | 3.3.x | 1.4.0 |
