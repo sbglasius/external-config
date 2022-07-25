@@ -26,4 +26,9 @@ class TestAppIntegrationSpec extends Specification {
         and:
         testSingleton.micronautOnlyValue == 'Micronaut Only'
     }
+    
+    void "returning a nested map value"() {
+        expect:
+        testService.mapConfigValue == 'The Map Config Value'
+    }
 }

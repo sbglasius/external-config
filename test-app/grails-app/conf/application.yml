@@ -126,4 +126,5 @@ grails:
         locations:
             - classpath:resourceConfig.yml
             - /tmp/not-found-12345.yml
+            - classpath:map-config.groovy
 
