@@ -1,9 +1,6 @@
-version "$pluginVersion"
 group "dk.glasius"
 
-apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
-apply plugin: 'maven-publish'
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
@@ -39,11 +36,61 @@ tasks.withType(Test) {
     systemProperty 'user.home', System.getProperty('user.home')
 }
 
-if (project.hasProperty('release')) {
-    println 'Using release profile for building ' + project.getName()
-    apply from: 'gradle/profile-release.gradle'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources"
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'external-config'
+            version = project.version
 
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
 
+            pom {
+                name = 'External Config'
+                description = 'Mimic the Grails 2 way of handling external configurations'
+                url = 'https://github.com/sbglasius/external-config'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'sbglasius'
+                        name = 'Søren Berg Glasius'
+                        email = 'soeren@glasius.dk'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/sbglasius/external-config.git'
+                    developerConnection = 'scm:git:ssh:github.com:sbglasius/external-config.git'
+                    url = 'https://github.com/sbglasius/external-config/'
+                }
+            }
+        }
+    }
+}
 
+ext."signing.keyId" = project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY')
+ext."signing.password" = project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE')
+ext."signing.secretKeyRingFile" = project.findProperty('signing.secretKeyRingFile') ?: (System.getenv('GITHUB_WORKSPACE') ? "${System.getenv('GITHUB_WORKSPACE')}/secring.gpg" : "${System.getProperty('user.home')}/.gnupg/secring.gpg")
+
+ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion }
+        sign publishing.publications.maven
+    }
+}
