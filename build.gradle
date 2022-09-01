@@ -30,3 +30,13 @@ if (project.hasProperty('release')) {
         }
     }
 }
+
+task snapshotVersion {
+    doLast {
+        if (!project.version.endsWith('-SNAPSHOT')) {
+            ant.propertyfile(file: "gradle.properties") {
+                entry(key: "version", value: "${project.version}-SNAPSHOT")
+            }
+        }
+    }
+}
