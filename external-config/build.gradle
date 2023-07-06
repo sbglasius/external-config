@@ -1,14 +1,15 @@
+plugins {
+    id 'maven-publish'
+    id 'signing'
+}
+
 group "dk.glasius"
 
-apply plugin: 'maven-publish'
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-
 dependencies {
-    implementation(platform("org.grails:grails-bom:$grailsVersion"))
+    implementation platform("org.grails:grails-bom:$grailsVersion")
 
     implementation "org.grails:grails-core"
+    implementation "org.codehaus.groovy:groovy-yaml:${groovyVersion}"
 
     implementation "io.micronaut:micronaut-core"
     implementation "io.micronaut:micronaut-inject"
@@ -19,14 +20,11 @@ dependencies {
     runtimeOnly 'org.yaml:snakeyaml:2.2'
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     systemProperty 'TEST_HOME', 'home-value'
     systemProperty 'user.home', System.getProperty('user.home')
     systemProperty 'grails.env', 'TEST'
 }
-
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
 java {
     withSourcesJar()

@@ -1,9 +1,10 @@
+plugins {
+    id "org.grails.grails-web"
+    id "org.grails.grails-gsp"
+}
 
 version "0.1"
 group "test.app"
-
-apply plugin:"org.grails.grails-web"
-apply plugin:"org.grails.grails-gsp"
 
 dependencies {
     compileOnly "io.micronaut:micronaut-inject-groovy"
