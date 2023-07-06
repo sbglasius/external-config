@@ -1,6 +1,7 @@
 import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
 
 plugins {
+    id 'java'
     id 'groovy'
 }
 
@@ -30,11 +31,11 @@ allprojects {
         isReleaseVersion = !isBuildSnapshot
     }
     
-    tasks.withType(Test) {
+    tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }
 
-    tasks.withType(GroovyCompile) {
+    tasks.withType(GroovyCompile).configureEach {
         configure(groovyOptions) {
             forkOptions.jvmArgs = ['-Xmx1024m']
         }
@@ -69,7 +70,7 @@ tasks.withType(InitializeNexusStagingRepository).configureEach {
     shouldRunAfter(tasks.withType(Sign))
 }
 
-tasks.register('snapshotVersion') {
+tasks.register('snapshotVersion')  {
     doLast {
         if (!isBuildSnapshot) {
             ant.propertyfile(file: "gradle.properties") {

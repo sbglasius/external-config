@@ -27,7 +27,6 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
     private PropertiesPropertySourceLoader propertiesPropertySourceLoader = new PropertiesPropertySourceLoader()
-
     private String userHome = System.properties.getProperty('user.home')
     private String separator = System.properties.getProperty('file.separator')
 
@@ -112,7 +111,6 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
                 } catch (FileNotFoundException ignore) {
                     return null
                 }
-
             }
         }
         return null
@@ -166,22 +164,22 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         List<String> sources = System.getProperty('micronaut.config.files', System.getenv('MICRONAUT_CONFIG_FILES') ?: '').tokenize(',')
         sources.addAll(newSources.collect { it.toString() })
         sources = filterMissingMicronautLocations(sources)
-        log.debug("---> Setting 'micronaut.config.files' to ${sources.join(',')}")
-        System.setProperty('micronaut.config.files', sources.join(',') )
+        log.debug("Setting 'micronaut.config.files' to ${sources.join(',')}")
+        System.setProperty('micronaut.config.files', sources.join(','))
     }
 
     private List<String> filterMissingMicronautLocations(List<String> sources) {
         sources.findAll { String location ->
-                try {
-                    def resource = defaultResourceLoader.getResource(location)
-                    if (!resource.exists()) {
-                        log.debug("Configuration file ${location} not found, ignoring.")
-                        return false
-                    }
-                } catch (FileNotFoundException ignore) {
+            try {
+                def resource = defaultResourceLoader.getResource(location)
+                if (!resource.exists()) {
                     log.debug("Configuration file ${location} not found, ignoring.")
                     return false
                 }
+            } catch (FileNotFoundException ignore) {
+                log.debug("Configuration file ${location} not found, ignoring.")
+                return false
+            }
             true
         }
     }
