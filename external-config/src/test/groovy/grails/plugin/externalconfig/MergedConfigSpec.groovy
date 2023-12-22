@@ -6,7 +6,6 @@ import org.grails.config.NavigableMapPropertySource
 import org.grails.testing.GrailsUnitTest
 import org.springframework.core.env.ConfigurableEnvironment
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class MergedConfigSpec extends Specification implements GrailsUnitTest {
 

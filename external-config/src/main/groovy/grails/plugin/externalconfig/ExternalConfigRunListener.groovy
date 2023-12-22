@@ -3,15 +3,12 @@ package grails.plugin.externalconfig
 import grails.util.Environment
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import groovy.yaml.YamlSlurper
 import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
-import org.grails.core.cfg.GroovyConfigPropertySourceLoader
 import org.springframework.boot.ConfigurableBootstrapContext
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringApplicationRunListener
 import org.springframework.boot.env.PropertiesPropertySourceLoader
-import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.MapPropertySource
 import org.springframework.core.env.PropertySource
@@ -30,7 +27,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
     private PropertiesPropertySourceLoader propertiesPropertySourceLoader = new PropertiesPropertySourceLoader()
-    
+
     private String userHome = System.properties.getProperty('user.home')
     private String separator = System.properties.getProperty('file.separator')
 
