@@ -1,3 +1,5 @@
+import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
+
 buildscript {
     repositories {
         mavenLocal()
@@ -10,16 +12,28 @@ buildscript {
     }
 }
 
-allprojects {
-    apply plugin: 'groovy'    
+version project.projectVersion
 
-    version "$version"
-    
+ext {
+    isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
+    isReleaseVersion = !isBuildSnapshot
+}
+
+allprojects {
+    apply plugin: 'groovy'
+
+    version rootProject.version
+
     repositories {
         mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
 
+    ext {
+        isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
+        isReleaseVersion = !isBuildSnapshot
+    }
+    
     tasks.withType(Test) {
         useJUnitPlatform()
     }
@@ -32,7 +46,7 @@ allprojects {
     
 }
 
-if (project.hasProperty('release')) {
+if (project.isReleaseVersion) {
     apply plugin: 'io.github.gradle-nexus.publish-plugin'
 
     nexusPublishing {
@@ -51,10 +65,15 @@ if (project.hasProperty('release')) {
         }
     }
 }
+//do not generate extra load on Nexus with new staging repository if signing fails or if not a release version
+tasks.withType(InitializeNexusStagingRepository).configureEach {
+    onlyIf { isReleaseVersion }
+    shouldRunAfter(tasks.withType(Sign))
+}
 
-task snapshotVersion {
+tasks.register('snapshotVersion') {
     doLast {
-        if (!project.version.endsWith('-SNAPSHOT')) {
+        if (!isSnapshotVersion) {
             ant.propertyfile(file: "gradle.properties") {
                 entry(key: "version", value: "${project.version}-SNAPSHOT")
             }
