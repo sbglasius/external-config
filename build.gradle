@@ -73,7 +73,7 @@ tasks.withType(InitializeNexusStagingRepository).configureEach {
 
 tasks.register('snapshotVersion') {
     doLast {
-        if (!isSnapshotVersion) {
+        if (!isBuildSnapshot) {
             ant.propertyfile(file: "gradle.properties") {
                 entry(key: "version", value: "${project.version}-SNAPSHOT")
             }
