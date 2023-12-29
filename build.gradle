@@ -1,18 +1,8 @@
-import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
-
-buildscript {
-    repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
-    }
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.3.0'
 }
-
-version project.projectVersion
 
 ext {
     isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
@@ -20,35 +10,35 @@ ext {
 }
 
 allprojects {
-    apply plugin: 'groovy'
-
-    version rootProject.version
-
     repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
+        mavenCentral()
+        maven { url "https://repo.grails.org/grails/core/" }
     }
+
+    java {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
 
     ext {
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
         isReleaseVersion = !isBuildSnapshot
     }
     
-    tasks.withType(Test) {
+    tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }
 
-    tasks.withType(GroovyCompile) {
+    tasks.withType(GroovyCompile).configureEach {
         configure(groovyOptions) {
             forkOptions.jvmArgs = ['-Xmx1024m']
         }
     }
-    
+
 }
 
 if (project.isReleaseVersion) {
-    apply plugin: 'io.github.gradle-nexus.publish-plugin'
-
     nexusPublishing {
         repositories {
             sonatype {
@@ -66,12 +56,13 @@ if (project.isReleaseVersion) {
     }
 }
 //do not generate extra load on Nexus with new staging repository if signing fails or if not a release version
+import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
 tasks.withType(InitializeNexusStagingRepository).configureEach {
     onlyIf { isReleaseVersion }
     shouldRunAfter(tasks.withType(Sign))
 }
 
-tasks.register('snapshotVersion') {
+tasks.register('snapshotVersion')  {
     doLast {
         if (!isBuildSnapshot) {
             ant.propertyfile(file: "gradle.properties") {
