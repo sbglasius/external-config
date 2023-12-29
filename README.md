@@ -10,6 +10,7 @@ It also provides scripts to convert between yml & groovy config.
 
 | Grails | external-config |
 |--------|-----------------|
+| 6.1.1  | 4.0.0           |
 | 5.3.5  | 3.2.0           |
 | 5.0.x  | 3.0.0           |
 | 4.x.x  | 2.0.1           |
@@ -38,7 +39,7 @@ Add dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'dk.glasius:external-config:3.2.0' // or latest version
+    implementation 'dk.glasius:external-config:4.0.0' // or latest version
 }
 ```
 
