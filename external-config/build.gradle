@@ -17,7 +17,7 @@ dependencyManagement {
 
 dependencies {
     implementation "org.grails:grails-core"
-    implementation "org.codehaus.groovy:groovy-yaml:${groovyVersion}"
+    implementation "org.codehaus.groovy:groovy-yaml:3.0.21"
 
     implementation "io.micronaut:micronaut-core"
     implementation "io.micronaut:micronaut-inject"
