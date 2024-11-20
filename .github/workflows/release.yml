@@ -2,12 +2,35 @@ name: Release
 on:
     release:
         types: [ published ]
+permissions:
+    contents: write
 jobs:
-    release:
+    get-version:
+        name: Get version
         runs-on: ubuntu-latest
         env:
-            GIT_USER_NAME: sbglasius
-            GIT_USER_EMAIL: soeren@glasius.dk
+            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+        outputs:
+            version: ${{ steps.get_version.outputs.version-without-v }}
+            next-patch-version: ${{ steps.version.outputs.inc-patch }}
+        steps:
+            -   uses: actions/checkout@v4
+                with:
+                    token: ${{ secrets.GITHUB_TOKEN }}
+            -   uses: dhkatz/get-version-action@v3.0.0
+                id: get_version
+            -   uses: madhead/semver-utils@latest
+                id: version
+                with:
+                    version: ${{ steps.get_version.outputs.version-without-v }}
+    release:
+        name: Release to SONATYPE
+        runs-on: ubuntu-latest
+        needs: get-version
+        env:
+            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
         steps:
             -   uses: actions/checkout@v4
                 with:
@@ -16,46 +39,54 @@ jobs:
                 with:
                     java-version: 11
                     distribution: temurin
-            -   uses: dhkatz/get-version-action@v3.0.0
-                id: get_version
             -   uses: micronaut-projects/github-actions/pre-release@master
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@v4 
+            -   name: Debug
+                run: |
+                    echo "NOT running on ACT: ${{ !env.ACT }}"
             -   name: Publish to Sonatype OSSRH
-                id: publish
-                uses: gradle/gradle-build-action@v2
+                if: ${{ !env.ACT }} # prevent deploy using gh act
                 env:
                     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
                     SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
                     SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
                     SIGN_ARMORED_KEY: ${{ secrets.SIGN_ARMORED_KEY }}
-                    SIGN_PASSWORD: ${{ secrets.SIGNING_PASSPHRASE }}
-                    RELEASE_VERSION: ${{ steps.get_version.outputs.version-without-v }}
-                with:
-                    arguments: -info -Prelease=true :external-config:publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon
-            -   name: Bump patch version by one
-                uses: flatherskevin/semver-action@v1
-                id: version
-                with:
-                    incrementLevel: patch
-                    source: tags
-            -   name: Set version in gradle.properties
-                env:
-                    NEXT_VERSION: ${{ steps.version.outputs.nextVersion }}
+                    SIGN_PASSWORD: ${{ secrets.SIGN_PASSWORD }}
+                    RELEASE_VERSION: ${{ needs.get-version.outputs.version }}
                 run: |
-                    echo "Preparing next snapshot"
-                    ./gradlew snapshotVersion -Pversion="${NEXT_VERSION}"
-            -   name: Commit & Push changes
-                uses: actions-js/push@master
-                with:
-                    github_token: ${{ secrets.GITHUB_TOKEN }}
-                    author_name: ${{ secrets.GIT_USER_NAME }}
-                    author_email: $${ secrets.GIT_USER_EMAIL }}
-                    message: 'Set project version to next SNAPSHOT'
-            -   name: Export Gradle Properties
-                uses: micronaut-projects/github-actions/export-gradle-properties@master
-            -   name: Run post-release
-                if: success()
-                uses: micronaut-projects/github-actions/post-release@master
+                    echo "Publishing Artifacts for ${RELEASE_VERSION}"
+                    (set -x; ./gradlew -Pversion="${RELEASE_VERSION}" publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon)
+    bump-snapshot-version:
+        runs-on: ubuntu-latest
+        needs: [ get-version, release ]
+        env:
+            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+            NEXT_VERSION: ${{ needs.get-version.outputs.next-patch-version }}
+        steps:
+            -   uses: actions/checkout@v4
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
+            -   name: Get branch names.
+                id: branch-names
+                uses: tj-actions/branch-names@v8
+            -   uses: actions/setup-java@v4
+                with:
+                    java-version: 11
+                    distribution: temurin
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@v4
+            -   name: Set version in gradle.properties
+                run: |
+                    echo "Preparing next snapshot as ${NEXT_VERSION}"
+                    ./gradlew snapshotVersion -Pversion="${NEXT_VERSION}"
+            -   uses: actions-js/push@master
+                with:
+                    github_token: ${{ secrets.GITHUB_TOKEN }}
+                    author_name: ${{ vars.GIT_USER_NAME }}
+                    author_email: $${ vars.GIT_USER_EMAIL }}
+                    branch: ${{ steps.branch-names.outputs.default_branch }}
+                    message: Set project version to ${{ env.NEXT_VERSION }}-SNAPSHOT
