@@ -58,7 +58,7 @@ jobs:
                     RELEASE_VERSION: ${{ needs.get-version.outputs.version }}
                 run: |
                     echo "Publishing Artifacts for ${RELEASE_VERSION}"
-                    (set -x; ./gradlew -Pversion="${RELEASE_VERSION}" publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon)
+                    (set -x; ./gradlew -Pversion="${RELEASE_VERSION}" external-config:publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon)
     bump-snapshot-version:
         runs-on: ubuntu-latest
         needs: [ get-version, release ]
