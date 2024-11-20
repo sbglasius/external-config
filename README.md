@@ -10,6 +10,7 @@ It also provides scripts to convert between yml & groovy config.
 
 | Grails | external-config |
 |--------|-----------------|
+| 6.2.1  | 4.0.1           |
 | 6.1.1  | 4.0.0           |
 | 5.3.5  | 3.2.0           |
 | 5.0.x  | 3.0.0           |
@@ -39,7 +40,7 @@ Add dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'dk.glasius:external-config:4.0.0' // or latest version
+    implementation 'dk.glasius:external-config:4.0.1' // or latest version
 }
 ```
 
@@ -160,7 +161,7 @@ tasks.withType(Test) {
 or alternatively add this to your `dependencies`:
 
 ```groovy
-provided files('external-config') // provided to ensure that external config is not included in the war file
+runtimeOnly files('external-config') // provided to ensure that external config is not included in the war file
 ```
 
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
@@ -168,6 +169,10 @@ Alternatively, you can make a gradle script to move the external configuration f
 ## Micronaut support
 
 The plugin will register the locations in `grails.config.locations` as `micronaut.config.files`. Please note, that Micronaut will fail, if it does not recognise the file extension.
+
+## Debugging
+
+To see which files the `external-config` is loading, add `grails.plugin.externalconfig` at `DEBUG` level to your `logback.xml` configuration file.
 
 ## Scripts
 
