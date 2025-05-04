@@ -1,6 +1,6 @@
 # External-Config
 
-[![Tests](https://github.com/sbglasius/external-config/actions/workflows/gradle-check.yml/badge.svg)](https://github.com/sbglasius/external-config/actions/workflows/gradle-check.yml)
+## Notice, that from Grails 7, this plugin is released at a [part of](https://github.com/apache/grails-core/blob/7.0.x/grails-core/src/main/groovy/grails/config/external/ExternalConfigRunListener.groovy) Grails core!
 
 This plugin will mimic the Grails 2 way of handling external configurations defined in `grails.config.locations`. 
 
